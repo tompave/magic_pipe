@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "magic_pipe"
   spec.version       = MagicPipe::VERSION
   spec.authors       = ["Tommaso Pavese"]
-  spec.email         = ["tommaso.pavese@deliveroo.co.uk"]
+  spec.email         = ["tommaso@pavese.me"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{A Magic Pipe to send data to a backend.}
+  spec.description   = %q{A Magic Pipe to send JSON data to a configurable backend in response to ActiveRecord lifecycle events.}
+  spec.homepage      = "https://github.com/deliveroo/magic_pipe-rb"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -32,4 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+
+  spec.add_development_dependency "pry"
 end
