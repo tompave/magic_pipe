@@ -8,4 +8,14 @@ require "magic_pipe/transports"
 
 module MagicPipe
   # Your code goes here...
+
+  class << self
+    def send_data(data)
+      config.sender.new(
+        data,
+        config.codec,
+        config.transport
+      ).call
+    end
+  end
 end
