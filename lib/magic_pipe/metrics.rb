@@ -2,7 +2,7 @@ module MagicPipe
   module Metrics
     class << self
       def client
-        Config.instance.metrics_client
+        MagicPipe.config.metrics_client
       end
 
       def method_missing(name, *args, &block)
