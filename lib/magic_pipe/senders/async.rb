@@ -3,7 +3,21 @@ require "magic_pipe/senders/base"
 
 module MagicPipe
   module Senders
-    class Sidekiq < Base
+    class Async < Base
+      class Worker
+        include Sidekiq::Worker
+
+        def perform(args)
+          data = args["data"]
+          codec = args["codec"]
+          transport = args["transport"]
+
+          payload = codec.new(data).encode
+          transport.new(payload).submit
+        end
+      end
+
+
       SETTINGS = {
         "class" => Worker,
         "queue" => "magic_pipe",
@@ -21,7 +35,7 @@ module MagicPipe
             "transport" => @transport,
           }
         })
-        ::Sidekiq::Client.push(options)
+        Sidekiq::Client.push(options)
       end
     end
   end
