@@ -15,6 +15,10 @@ module MagicPipe
       def encode
         raise NotImplementedError
       end
+
+      def encoding
+        raise NotImplementedError
+      end
     end
   end
 end

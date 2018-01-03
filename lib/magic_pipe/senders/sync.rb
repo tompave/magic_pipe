@@ -5,7 +5,7 @@ module MagicPipe
     class Sync < Base
       def call
         payload = @codec.new(@data).encode
-        @transport.new(payload).submit
+        @transport.new(payload, @codec.encoding).submit
       end
     end
   end

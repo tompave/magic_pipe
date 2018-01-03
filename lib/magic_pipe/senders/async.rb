@@ -13,7 +13,7 @@ module MagicPipe
           transport = args["transport"]
 
           payload = codec.new(data).encode
-          transport.new(payload).submit
+          transport.new(payload, codec.encoding).submit
         end
       end
 

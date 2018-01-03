@@ -11,6 +11,10 @@ module MagicPipe
           JSON.dump(o.as_json)
         end
       end
+
+      def encoding
+        :json
+      end
     end
   end
 end

@@ -1,6 +1,8 @@
+require "magic_pipe/transports/base"
+
 module MagicPipe
   module Transports
-    class Sqs
+    class Sqs < Base
     end
   end
 end
