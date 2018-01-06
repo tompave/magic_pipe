@@ -9,6 +9,8 @@ module MagicPipe
           o.to_json
         elsif o.respond_to?(:as_json)
           JSON.dump(o.as_json)
+        else
+          JSON.dump(o)
         end
       end
 
