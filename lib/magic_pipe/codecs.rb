@@ -1,5 +1,13 @@
 module MagicPipe
   module Codecs
+    def self.lookup(type)
+      case type
+      when :json then Json
+      when :thrift then Thrift
+      else
+        raise "Unknown MagicPipe::Codecs type."
+      end
+    end
   end
 end
 

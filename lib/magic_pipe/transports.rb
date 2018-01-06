@@ -1,5 +1,13 @@
 module MagicPipe
   module Transports
+    def self.lookup(type)
+      case type
+      when :https then Https
+      when :sqs then Sqs
+      else
+        raise "Unknown MagicPipe::Transports type."
+      end
+    end
   end
 end
 
