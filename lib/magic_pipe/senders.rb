@@ -4,8 +4,9 @@ module MagicPipe
       case type
       when :sync then Sync
       when :async then Async
+      when Class then type
       else
-        raise "Unknown MagicPipe::Senders type."
+        raise ConfigurationError, "Unknown MagicPipe::Senders type: '#{type}'."
       end
     end
   end
