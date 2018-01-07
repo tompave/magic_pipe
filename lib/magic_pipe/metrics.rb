@@ -1,17 +1,17 @@
 module MagicPipe
-  module Metrics
-    class << self
-      def client
-        MagicPipe.config.metrics_client
-      end
+  class Metrics
+    def initialize(client)
+      @client = client
+    end
 
-      def method_missing(name, *args, &block)
-        client.public_send(name, *args, &block)
-      end
+    attr_reader :client
 
-      def respond_to_missing?(name, include_all)
-        client.respond_to?(name, include_all)
-      end
+    def method_missing(name, *args, &block)
+      client.public_send(name, *args, &block)
+    end
+
+    def respond_to_missing?(name, include_all)
+      client.respond_to?(name, include_all)
     end
   end
 end

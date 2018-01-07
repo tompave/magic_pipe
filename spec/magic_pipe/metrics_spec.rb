@@ -1,5 +1,6 @@
 RSpec.describe MagicPipe::Metrics do
-  subject { described_class }
+  let(:client) { double("metrics client", increment: nil) }
+  subject { described_class.new(client) }
 
   describe "it responds to the statsd methods" do
     example "increment" do

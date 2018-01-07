@@ -1,7 +1,7 @@
 RSpec.describe MagicPipe::Config do
-  subject { described_class.instance }
+  subject { described_class.new }
 
-  describe "the configuration values" do
+  describe "the default configuration values" do
     specify "logger" do
       expect(subject.logger).to be_a Logger
     end
