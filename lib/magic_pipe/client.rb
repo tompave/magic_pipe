@@ -5,8 +5,11 @@ module MagicPipe
 
       @metrics = Metrics.new(config.metrics_client)
 
+      @transport =
+        Transports.lookup(config.transport)
+          .new(@metrics, config.logger)
+
       @codec = Codecs.lookup(config.codec)
-      @transport = Transports.lookup(config.transport)
       @sender = Senders.lookup(config.sender)
     end
 

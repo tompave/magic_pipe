@@ -13,8 +13,9 @@ RSpec.describe MagicPipe::Client do
     it "can access the configuration" do
       expect(subject.config).to eq config
 
+      expect(subject.transport).to be_an_instance_of(MagicPipe::Transports::Https)
+
       expect(subject.codec).to eq MagicPipe::Codecs::Json
-      expect(subject.transport).to eq MagicPipe::Transports::Https
       expect(subject.sender).to eq MagicPipe::Senders::Sync
     end
   end

@@ -6,7 +6,7 @@ module MagicPipe
       def call
         encoder = @codec.new(@data)
         payload = encoder.encode
-        @transport.new(payload, encoder.encoding).submit
+        @transport.submit(payload, encoder.encoding)
       end
     end
   end

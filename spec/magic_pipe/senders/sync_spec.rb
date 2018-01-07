@@ -1,10 +1,10 @@
 RSpec.describe MagicPipe::Senders::Sync do
   let(:data) { double("some ruby object or hash") }
   let(:codec_k) { double("codec class") }
-  let(:transport_k) { double("transport class") }
+  let(:transport_i) { double("transport instance") }
 
   subject do
-    described_class.new(data, codec_k, transport_k)
+    described_class.new(data, codec_k, transport_i)
   end
 
   it "has a standard signature to be initialized with three arguments" do
@@ -20,10 +20,7 @@ RSpec.describe MagicPipe::Senders::Sync do
       payload = double("encoded payload")
       codec = double("codec instance", encode: payload, encoding: :dummy_codec)
       expect(codec_k).to receive(:new).with(data).and_return(codec)
-
-      transport = double("transport instance")
-      expect(transport_k).to receive(:new).with(payload, :dummy_codec).and_return(transport)
-      expect(transport).to receive(:submit)
+      expect(transport_i).to receive(:submit).with(payload, :dummy_codec)
 
       subject
     end

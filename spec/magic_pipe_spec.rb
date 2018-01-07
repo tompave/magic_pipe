@@ -30,8 +30,9 @@ RSpec.describe MagicPipe do
       end
 
       specify "the client is set up with the correct settings" do
+        expect(subject.transport).to be_an_instance_of(MagicPipe::Transports::Https)
+
         expect(subject.codec).to eq MagicPipe::Codecs::Json
-        expect(subject.transport).to eq MagicPipe::Transports::Https
         expect(subject.sender).to eq MagicPipe::Senders::Sync
       end
     end
