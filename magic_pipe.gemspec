@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_development_dependency 'sidekiq', '~> 5.0'
+  spec.add_development_dependency 'oj'
 end
