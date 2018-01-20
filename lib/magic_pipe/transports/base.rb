@@ -1,14 +1,15 @@
 module MagicPipe
   module Transports
     class Base
-      def initialize(metrics, logger)
+      def initialize(config, metrics)
+        @config = config
         @metrics = metrics
-        @logger = logger
+        @logger = @config.logger
       end
 
       attr_reader :metrics, :logger
 
-      def submit(payload, encoding)
+      def submit(payload)
         raise NotImplementedError
       end
     end

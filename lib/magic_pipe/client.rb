@@ -5,9 +5,7 @@ module MagicPipe
 
       @metrics = Metrics.new(config.metrics_client)
 
-      @transport =
-        Transports.lookup(config.transport)
-          .new(@metrics, config.logger)
+      @transport = build_transport
 
       @codec = Codecs.lookup(config.codec)
       @sender = Senders.lookup(config.sender)
@@ -21,6 +19,14 @@ module MagicPipe
         codec,
         transport
       ).call
+    end
+
+
+    private
+
+    def build_transport
+      klass = Transports.lookup(@config.transport)
+      klass.new(@config, @metrics)
     end
   end
 end
