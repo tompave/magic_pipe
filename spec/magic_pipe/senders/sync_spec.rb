@@ -18,9 +18,9 @@ RSpec.describe MagicPipe::Senders::Sync do
 
     it "encodes the data with the codec and sends it with the transport" do
       payload = double("encoded payload")
-      codec = double("codec instance", encode: payload, encoding: :dummy_codec)
+      codec = double("codec instance", encode: payload)
       expect(codec_k).to receive(:new).with(data).and_return(codec)
-      expect(transport_i).to receive(:submit).with(payload, :dummy_codec)
+      expect(transport_i).to receive(:submit).with(payload)
 
       subject
     end
