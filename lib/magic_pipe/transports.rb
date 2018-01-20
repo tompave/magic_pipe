@@ -4,6 +4,7 @@ module MagicPipe
       case type
       when :https then Https
       when :sqs then Sqs
+      when Array then Multi
       when Class then type
       else
         raise ConfigurationError, "Unknown MagicPipe::Transports type: '#{type}'."

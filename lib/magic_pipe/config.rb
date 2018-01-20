@@ -12,6 +12,8 @@ module MagicPipe
     ]
 
     attr_accessor *FIELDS
+    alias_method :transports=, :transport=
+    alias_method :transports, :transport
 
 
     def initialize
