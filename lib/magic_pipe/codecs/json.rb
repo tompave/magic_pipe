@@ -4,6 +4,8 @@ require "magic_pipe/codecs/base"
 module MagicPipe
   module Codecs
     class Json < Base
+      ENCODING = "json"
+
       def encode
         if o.respond_to?(:to_json)
           o.to_json
@@ -12,10 +14,6 @@ module MagicPipe
         else
           JSON.dump(o)
         end
-      end
-
-      def encoding
-        :json
       end
     end
   end

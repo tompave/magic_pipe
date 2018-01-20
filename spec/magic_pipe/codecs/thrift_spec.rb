@@ -3,8 +3,8 @@ RSpec.describe MagicPipe::Codecs::Thrift do
   subject { described_class.new(object) }
 
   describe "encoding" do
-    it "returns :thrift" do
-      expect(subject.encoding).to eq :thrift
+    it "returns thrift" do
+      expect(subject.encoding).to eq "thrift"
     end
   end
 

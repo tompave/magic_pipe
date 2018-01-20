@@ -1,6 +1,8 @@
 module MagicPipe
   module Codecs
     class Base
+      ENCODING = "none"
+
       # object should be something similar
       # to an ActiveModel::Serializer or
       # ActiveRecord object.
@@ -17,7 +19,7 @@ module MagicPipe
       end
 
       def encoding
-        raise NotImplementedError
+        self.class.const_get(:ENCODING)
       end
     end
   end
