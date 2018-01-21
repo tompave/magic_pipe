@@ -3,6 +3,7 @@ RSpec.describe MagicPipe::Client do
     MagicPipe::Config.new do |c|
       c.codec = :json
       c.transport = :https
+      c.https_transport_options = {} # let the defaults apply
       c.sender = :sync
     end
   end

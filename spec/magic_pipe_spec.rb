@@ -8,6 +8,7 @@ RSpec.describe MagicPipe do
       MagicPipe.build do |c|
         c.codec = :json
         c.transport = :https
+        c.https_transport_options = {} # let the defaults apply
         c.sender = :sync
       end
     end
@@ -44,6 +45,7 @@ RSpec.describe MagicPipe do
           MagicPipe.build do |c|
             c.codec = :invalid
             c.transport = :https
+            c.https_transport_options = {} # let the defaults apply
             c.sender = :sync
           end
         }.to raise_error(MagicPipe::ConfigurationError)
@@ -60,6 +62,7 @@ RSpec.describe MagicPipe do
           MagicPipe.build do |c|
             c.codec = :json
             c.transport = :https
+            c.https_transport_options = {} # let the defaults apply
             c.sender = :invalid
           end
         }.to raise_error(MagicPipe::ConfigurationError)

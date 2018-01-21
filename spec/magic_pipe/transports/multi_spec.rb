@@ -2,6 +2,7 @@ RSpec.describe MagicPipe::Transports::Multi do
   let(:config) do
     MagicPipe::Config.new do |c|
       c.transports = [:https, :sqs]
+      c.https_transport_options = {} # let the defaults apply
     end
   end
 
