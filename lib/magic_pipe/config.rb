@@ -9,6 +9,10 @@ module MagicPipe
       :codec,
       :transport,
       :sender,
+
+      :https_transport_options,
+      # :sqs_transport_options,
+      # :sidekiq_options,
     ]
 
     attr_accessor *FIELDS
@@ -32,6 +36,21 @@ module MagicPipe
       @sender ||= :sync
       @codec ||= :yaml
       @transport ||= :log
+
+      set_https_defaults
+    end
+
+
+    def set_https_defaults
+      return unless @https_transport_options
+
+      defaults = {
+        url: "https://localhost:8080/foo",
+        auth_token: "missing",
+        timeout: 2,
+        open_timeout: 3
+      }
+      @https_transport_options = defaults.merge(@https_transport_options)
     end
 
 
