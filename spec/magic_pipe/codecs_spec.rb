@@ -13,6 +13,10 @@ RSpec.describe MagicPipe::Codecs do
       expect(subject.lookup(:message_pack)).to eq MagicPipe::Codecs::MessagePack
     end
 
+    example "with :yaml it returns the Yaml codec class" do
+      expect(subject.lookup(:yaml)).to eq MagicPipe::Codecs::Yaml
+    end
+
     example "with a class it returns the class" do
       expect(subject.lookup(String)).to eq String
     end

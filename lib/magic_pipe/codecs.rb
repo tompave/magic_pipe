@@ -5,6 +5,7 @@ module MagicPipe
       when :json then Json
       when :thrift then Thrift
       when :msgpack, :message_pack then MessagePack
+      when :yaml then Yaml
       when Class then type
       else
         raise ConfigurationError, "Unknown MagicPipe::Codecs type: '#{type}'."

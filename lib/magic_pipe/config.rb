@@ -30,7 +30,7 @@ module MagicPipe
       @metrics_client ||= dummy_metrics_object
 
       @sender ||= :sync
-      @codec ||= :json
+      @codec ||= :yaml
       @transport ||= :log
     end
 
