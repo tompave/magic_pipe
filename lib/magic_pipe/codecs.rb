@@ -4,6 +4,7 @@ module MagicPipe
       case type
       when :json then Json
       when :thrift then Thrift
+      when :msgpack, :message_pack then MessagePack
       when Class then type
       else
         raise ConfigurationError, "Unknown MagicPipe::Codecs type: '#{type}'."

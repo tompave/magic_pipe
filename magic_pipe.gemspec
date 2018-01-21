@@ -37,4 +37,5 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'sidekiq', '~> 5.0'
   spec.add_development_dependency 'oj'
+  spec.add_development_dependency 'msgpack'
 end

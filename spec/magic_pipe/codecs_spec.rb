@@ -8,6 +8,11 @@ RSpec.describe MagicPipe::Codecs do
       expect(subject.lookup(:thrift)).to eq MagicPipe::Codecs::Thrift
     end
 
+    example "with :msgpack or :message_pack it returns the MessagePack codec class" do
+      expect(subject.lookup(:msgpack)).to eq MagicPipe::Codecs::MessagePack
+      expect(subject.lookup(:message_pack)).to eq MagicPipe::Codecs::MessagePack
+    end
+
     example "with a class it returns the class" do
       expect(subject.lookup(String)).to eq String
     end
