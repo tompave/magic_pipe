@@ -28,6 +28,10 @@ module MagicPipe
     def set_defaults
       @logger ||= Logger.new($stdout)
       @metrics_client ||= dummy_metrics_object
+
+      @sender ||= :sync
+      @codec ||= :json
+      @transport ||= :log
     end
 
 

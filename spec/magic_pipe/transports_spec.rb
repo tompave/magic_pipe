@@ -8,6 +8,10 @@ RSpec.describe MagicPipe::Transports do
       expect(subject.lookup(:sqs)).to eq MagicPipe::Transports::Sqs
     end
 
+    example "with :log it returns the Log transport class" do
+      expect(subject.lookup(:log)).to eq MagicPipe::Transports::Log
+    end
+
     example "with an Array it returns the Multi transport class" do
       expect(subject.lookup([:foo, :bar])).to eq MagicPipe::Transports::Multi
     end

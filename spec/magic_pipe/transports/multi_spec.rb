@@ -20,7 +20,7 @@ RSpec.describe MagicPipe::Transports::Multi do
 
 
   describe "submit" do
-    let(:payload) { {foo: "bar"} }
+    let(:payload) { "an encoded payload" }
     def perform
       subject.submit(payload)
     end
