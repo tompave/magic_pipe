@@ -38,4 +38,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'sidekiq', '~> 5.0'
   spec.add_development_dependency 'oj'
   spec.add_development_dependency 'msgpack'
+
+  spec.add_development_dependency 'typhoeus'
+  spec.add_development_dependency 'faraday'
+
+  spec.add_development_dependency 'webmock'
 end
