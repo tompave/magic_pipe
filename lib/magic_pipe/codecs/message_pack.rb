@@ -6,7 +6,7 @@ begin
   module MagicPipe
     module Codecs
       class MessagePack < Base
-        ENCODING = "msgpack"
+        TYPE = "application/x-msgpack"
 
         def encode
           case o

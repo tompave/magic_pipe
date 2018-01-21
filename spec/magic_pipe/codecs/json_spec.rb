@@ -2,9 +2,9 @@ RSpec.describe MagicPipe::Codecs::Json do
   let(:object) { { foo: "bar", baz: [1, 2, 3] } }
   subject { described_class.new(object) }
 
-  describe "encoding" do
-    it "returns json" do
-      expect(subject.encoding).to eq "json"
+  describe "type" do
+    it "returns application/json" do
+      expect(subject.type).to eq "application/json"
     end
   end
 

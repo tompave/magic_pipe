@@ -3,7 +3,7 @@ require "magic_pipe/codecs/base"
 module MagicPipe
   module Codecs
     class Json < Base
-      ENCODING = "json"
+      TYPE = "application/json"
 
       def encode
         if o.respond_to?(:to_json)

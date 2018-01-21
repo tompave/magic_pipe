@@ -10,9 +10,9 @@ RSpec.describe MagicPipe::Codecs::Yaml do
   end
   subject { described_class.new(object) }
 
-  describe "encoding" do
-    it "returns yaml" do
-      expect(subject.encoding).to eq "yaml"
+  describe "type" do
+    it "returns application/x-yaml" do
+      expect(subject.type).to eq "application/x-yaml"
     end
   end
 

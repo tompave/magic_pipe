@@ -13,9 +13,9 @@ RSpec.describe MagicPipe::Codecs::MessagePack do
   end
   subject { described_class.new(object) }
 
-  describe "encoding" do
-    it "returns msgpack" do
-      expect(subject.encoding).to eq "msgpack"
+  describe "type" do
+    it "returns application/x-msgpack" do
+      expect(subject.type).to eq "application/x-msgpack"
     end
   end
 

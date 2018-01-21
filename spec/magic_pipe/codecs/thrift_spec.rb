@@ -2,9 +2,9 @@ RSpec.describe MagicPipe::Codecs::Thrift do
   let(:object) { { foo: "bar", baz: [1, 2, 3] } }
   subject { described_class.new(object) }
 
-  describe "encoding" do
-    it "returns thrift" do
-      expect(subject.encoding).to eq "thrift"
+  describe "type" do
+    it "returns application/vnd.apache.thrift.binary" do
+      expect(subject.type).to eq "application/vnd.apache.thrift.binary"
     end
   end
 

@@ -4,7 +4,11 @@ require "yaml"
 module MagicPipe
   module Codecs
     class Yaml < Base
-      ENCODING = "yaml"
+      # text/vnd.yaml
+      # text/x-yaml
+      # application/x-yaml
+
+      TYPE = "application/x-yaml"
 
       def encode
         ::YAML.dump(o)
