@@ -26,7 +26,7 @@ module MagicPipe
           Oj.dump(data)
         end
       rescue LoadError
-        puts "The oj gem is not available. Using json from the stdlib."
+        puts "[#{self.to_s}] The oj gem is not available. Using json from the stdlib."
         require "json"
 
         def json_dump(data)
