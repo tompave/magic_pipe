@@ -8,7 +8,7 @@ module MagicPipe
       end
 
       def submit(payload)
-        @logger.info "[Trasport#submit]: ↩️\n#{payload}"
+        @logger.info "[Trasport#submit]: ↩️\n#{payload}\n"
       end
     end
   end
