@@ -22,7 +22,31 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+client = MagicPipe.build do |mp|
+  mp.codec = :json
+  mp.sender = :async
+  mp.transport = :https
+
+  mp.sidekiq_options = {}
+  mp.https_transport_options = {
+    url: "https://something.dev/foo",
+    auth_token: "bar",
+    timeout: 1,
+    open_timeout: 1
+  }
+  mp.sqs_transport_options = {
+    aws_access_key_id: ENV["A"],
+    aws_secret_access_key: ENV["B"],
+    queue_name: "foooo"
+  }
+
+  mp.logger = Rails.logger
+  mp.metrics_client = STATSD_CLIENT
+end
+
+client.send_data(object)
+```
 
 ## Development
 
