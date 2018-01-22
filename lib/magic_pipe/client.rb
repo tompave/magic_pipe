@@ -13,9 +13,12 @@ module MagicPipe
 
     attr_reader :config, :codec, :transport, :sender, :metrics
 
-    def send_data(data)
+    def send_data(object:, topic:, wrapper: nil, time: Time.now.utc)
       sender.new(
-        data,
+        object,
+        topic,
+        wrapper,
+        time,
         codec,
         transport
       ).call

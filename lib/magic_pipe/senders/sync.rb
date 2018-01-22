@@ -4,7 +4,8 @@ module MagicPipe
   module Senders
     class Sync < Base
       def call
-        payload = @codec.new(@data).encode
+        data = @wrapper ? @wrapper.new(@object) : @object
+        payload = @codec.new(data).encode
         @transport.submit(payload)
       end
     end
