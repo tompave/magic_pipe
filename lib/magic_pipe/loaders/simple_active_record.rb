@@ -10,15 +10,22 @@ module MagicPipe
 
       def decompose
         {
-          klass: @record.class,
+          klass: @record.class.to_s,
           id: @record.id,
-          wrapper: @wrapper,
+          wrapper: (@wrapper && @wrapper.to_s),
         }
       end
 
-      def self.load(record_klass, id, wrapper_klass=nil)
+      def self.load(record_klass_s, id, wrapper_klass_n=nil)
+        record_klass = Object.const_get(record_klass_s)
         record = record_klass.find(id)
-        wrapper_klass ? wrapper_klass.new(record) : record
+
+        if wrapper_klass_n
+          wrapper_klass = Object.const_get(wrapper_klass_n)
+          wrapper_klass.new(record)
+        else
+          record
+        end
       end
     end
   end

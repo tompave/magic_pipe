@@ -7,13 +7,33 @@ module MagicPipe
       class Worker
         include Sidekiq::Worker
 
-        def perform(args)
-          data = args["data"]
-          codec = args["codec"]
-          transport = args["transport"]
+        def perform(decomposed_object, topic, time, client_name)
+          client = MagicPipe.lookup_client(client_name)
+          codec = client.codec
+          transport = client.transport
 
-          payload = codec.new(data).encode
-          transport.new(payload, codec.encoding).submit
+          object = load_object(decomposed_object, client.loader)
+
+          producer_name = client.config.producer_name
+
+          message = Envelope.new(
+            body: object,
+            topic: topic,
+            producer: producer_name,
+            time: time
+          )
+
+          payload = codec.new(message).encode
+          transport.submit(payload)
+        end
+
+
+        def load_object(data, loader)
+          loader.load(
+            data["klass"],
+            data["id"],
+            data["wrapper"]
+          )
         end
       end
 
@@ -21,6 +41,7 @@ module MagicPipe
       SETTINGS = {
         "class" => Worker,
         "queue" => "magic_pipe",
+        "retry" => true
       }
 
       def call
@@ -29,13 +50,20 @@ module MagicPipe
 
       def enqueue
         options = SETTINGS.merge({
-          "args" => {
-            "data" => @data,
-            "codec" => @codec,
-            "transport" => @transport,
-          }
+          "args" => [
+            decomposed_object,
+            @topic,
+            @time,
+            @config.client_name
+          ]
         })
         Sidekiq::Client.push(options)
+      end
+
+
+      def decomposed_object
+        loader = MagicPipe::Loaders.lookup(@config.loader)
+        loader.new(@object, @wrapper).decompose
       end
     end
   end

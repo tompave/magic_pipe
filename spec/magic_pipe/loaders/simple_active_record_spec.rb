@@ -1,7 +1,7 @@
 RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
   let(:record) { MagicPipe::TestRecord.new(42, "hello") }
-  let(:record_k) { MagicPipe::TestRecord }
-  let(:serializer_k) { MagicPipe::TestRecordSerializer }
+  let(:record_k_n) { "MagicPipe::TestRecord" }
+  let(:serializer_k_n) { "MagicPipe::TestRecordSerializer" }
 
 
   describe "#decompose" do
@@ -10,7 +10,7 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
 
       it "returns data to fetch the record later" do
         expect(subject.decompose).to eq({
-          klass: record_k,
+          klass: record_k_n,
           id: 42,
           wrapper: nil
         })
@@ -18,13 +18,13 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
     end
 
     context "with wrapper" do
-      subject { described_class.new(record, serializer_k) }
+      subject { described_class.new(record, MagicPipe::TestRecordSerializer) }
 
       it "returns data to fetch the record later" do
         expect(subject.decompose).to eq({
-          klass: record_k,
+          klass: record_k_n,
           id: 42,
-          wrapper: serializer_k
+          wrapper: serializer_k_n
         })
       end
     end
@@ -35,27 +35,31 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
     context "without wrapper" do
       def perform
         described_class.load(
-          record_k,
+          record_k_n,
           11
         )
       end
 
       it "fetches the record" do
-        expect(perform).to eq record_k.find(11)
+        expect(perform).to eq MagicPipe::TestRecord.find(11)
       end
     end
 
     context "with wrapper" do
       def perform
         described_class.load(
-          record_k,
+          record_k_n,
           11,
-          serializer_k
+          serializer_k_n
         )
       end
 
       it "fetches and wraps the record" do
-        expect(perform).to eq serializer_k.new(record_k.find(11))
+        expect(perform).to eq(
+          MagicPipe::TestRecordSerializer.new(
+            MagicPipe::TestRecord.find(11)
+          )
+        )
       end
     end
   end
