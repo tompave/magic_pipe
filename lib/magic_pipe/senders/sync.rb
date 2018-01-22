@@ -4,9 +4,21 @@ module MagicPipe
   module Senders
     class Sync < Base
       def call
-        data = @wrapper ? @wrapper.new(@object) : @object
-        payload = @codec.new(data).encode
+        payload = @codec.new(message).encode
         @transport.submit(payload)
+      end
+
+      def message
+        Envelope.new(
+          body: data,
+          topic: @topic,
+          producer: @config.producer_name,
+          time: @time
+        )
+      end
+
+      def data
+        @wrapper ? @wrapper.new(@object) : @object
       end
     end
   end

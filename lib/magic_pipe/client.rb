@@ -20,7 +20,8 @@ module MagicPipe
         wrapper,
         time,
         codec,
-        transport
+        transport,
+        @config
       ).call
     end
 

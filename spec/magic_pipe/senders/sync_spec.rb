@@ -5,6 +5,11 @@ RSpec.describe MagicPipe::Senders::Sync do
   let(:time) { Time.now.utc }
   let(:codec_k) { double("codec class") }
   let(:transport_i) { double("transport instance") }
+  let(:config) do
+    MagicPipe::Config.new do |c|
+      c.producer_name = "steak and ale pie"
+    end
+  end
 
   subject do
     described_class.new(
@@ -13,7 +18,8 @@ RSpec.describe MagicPipe::Senders::Sync do
       wrapper,
       time,
       codec_k,
-      transport_i
+      transport_i,
+      config
     )
   end
 
@@ -29,7 +35,14 @@ RSpec.describe MagicPipe::Senders::Sync do
     it "encodes the data with the codec and sends it with the transport" do
       payload = double("encoded payload")
       codec = double("codec instance", encode: payload)
-      expect(codec_k).to receive(:new).with(wrapper.new(object)).and_return(codec)
+      expect(codec_k).to receive(:new).with(
+        MagicPipe::Envelope.new(
+          body: wrapper.new(object),
+          topic: topic,
+          producer: "steak and ale pie",
+          time: time
+        )
+      ).and_return(codec)
       expect(transport_i).to receive(:submit).with(payload)
 
       subject

@@ -5,13 +5,14 @@ module MagicPipe
       # to an ActiveModel::Serializer or
       # ActiveRecord object.
       #
-      def initialize(object, topic, wrapper, time, codec, transport)
+      def initialize(object, topic, wrapper, time, codec, transport, config)
         @object = object
         @topic = topic
         @wrapper = wrapper
         @time = time
         @codec = codec
         @transport = transport
+        @config = config
       end
 
       def call
