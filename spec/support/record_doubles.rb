@@ -12,7 +12,7 @@ module MagicPipe
       new(id)
     end
 
-    def as_json
+    def as_json(*)
       {
         "id" => id,
         "foo" => foo,
@@ -20,7 +20,7 @@ module MagicPipe
       }
     end
 
-    def to_json
+    def to_json(*)
       JSON.dump(as_json)
     end
 
@@ -34,7 +34,7 @@ module MagicPipe
       @record = record
     end
 
-    def as_json
+    def as_json(*)
       @record.as_json.merge({
         foofoo: (@record.foo * 2),
         FOO: @record.foo.upcase,
@@ -44,7 +44,7 @@ module MagicPipe
       end.to_h
     end
 
-    def to_json
+    def to_json(*)
       JSON.dump(as_json)
     end
 

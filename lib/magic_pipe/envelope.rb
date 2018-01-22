@@ -8,7 +8,7 @@ module MagicPipe
     end
 
 
-    def as_json
+    def as_json(*)
       {
         topic: @topic,
         producer: @producer,

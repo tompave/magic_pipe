@@ -5,6 +5,7 @@ module MagicPipe
       when :https then Https
       when :sqs then Sqs
       when :log then Log
+      when :debug then Debug
       when Array then Multi
       when Class then type
       else

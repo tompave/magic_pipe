@@ -12,6 +12,10 @@ RSpec.describe MagicPipe::Transports do
       expect(subject.lookup(:log)).to eq MagicPipe::Transports::Log
     end
 
+    example "with :debug it returns the Debug transport class" do
+      expect(subject.lookup(:debug)).to eq MagicPipe::Transports::Debug
+    end
+
     example "with an Array it returns the Multi transport class" do
       expect(subject.lookup([:foo, :bar])).to eq MagicPipe::Transports::Multi
     end
