@@ -15,7 +15,7 @@ module MagicPipe
       :sender,
 
       :https_transport_options,
-      # :sqs_transport_options,
+      :sqs_transport_options,
       :async_transport_options,
     ]
 
@@ -45,6 +45,7 @@ module MagicPipe
       @transport ||= :log
 
       set_https_defaults
+      set_sqs_defaults
       set_async_defaults
     end
 
@@ -56,9 +57,19 @@ module MagicPipe
         url: "https://localhost:8080/foo",
         auth_token: "missing",
         timeout: 2,
-        open_timeout: 3
+        open_timeout: 3,
       }
       @https_transport_options = defaults.merge(@https_transport_options)
+    end
+
+
+    def set_sqs_defaults
+      return unless @sqs_transport_options
+
+      defaults = {
+        queue_name: "magic_pipe_sandbox",
+      }
+      @sqs_transport_options = defaults.merge(@sqs_transport_options)
     end
 
 

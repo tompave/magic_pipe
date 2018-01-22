@@ -42,6 +42,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'typhoeus'
   spec.add_development_dependency 'faraday'
 
+  spec.add_development_dependency 'aws-sdk-sqs', '~> 1.3'
+
   spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'timecop'
 end
