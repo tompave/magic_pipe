@@ -4,6 +4,7 @@ require "singleton"
 module MagicPipe
   class Config
     FIELDS = [
+      :producer_name,
       :logger,           # A Logger
       :metrics_client,   # Statsd compatible object
       :codec,
@@ -30,6 +31,7 @@ module MagicPipe
 
 
     def set_defaults
+      @producer_name ||= "Anonymous Piper"
       @logger ||= Logger.new($stdout)
       @metrics_client ||= dummy_metrics_object
 

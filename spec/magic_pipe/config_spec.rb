@@ -2,6 +2,10 @@ RSpec.describe MagicPipe::Config do
   subject { described_class.new }
 
   describe "the default configuration values" do
+    specify "producer_name" do
+      expect(subject.producer_name).to be_a String
+    end
+
     specify "logger" do
       expect(subject.logger).to be_a Logger
     end
