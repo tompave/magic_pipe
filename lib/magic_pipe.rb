@@ -4,6 +4,7 @@ require "magic_pipe/errors"
 require "magic_pipe/config"
 require "magic_pipe/metrics"
 
+require "magic_pipe/loaders"
 require "magic_pipe/codecs"
 require "magic_pipe/senders"
 require "magic_pipe/transports"

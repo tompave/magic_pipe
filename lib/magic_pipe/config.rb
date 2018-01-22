@@ -7,6 +7,8 @@ module MagicPipe
       :producer_name,
       :logger,           # A Logger
       :metrics_client,   # Statsd compatible object
+
+      :loader,
       :codec,
       :transport,
       :sender,
@@ -35,6 +37,7 @@ module MagicPipe
       @logger ||= Logger.new($stdout)
       @metrics_client ||= dummy_metrics_object
 
+      @loader ||= :simple_active_record
       @sender ||= :sync
       @codec ||= :yaml
       @transport ||= :log

@@ -1,6 +1,8 @@
 require "bundler/setup"
 require "magic_pipe"
-require 'webmock/rspec'
+require "webmock/rspec"
+
+require "support/record_doubles"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
