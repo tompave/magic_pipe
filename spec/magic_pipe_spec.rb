@@ -4,8 +4,13 @@ RSpec.describe MagicPipe do
   end
 
   describe "::build" do
+    before do
+      MagicPipe.clear_clients
+    end
+
     def good_build
       MagicPipe.build do |c|
+        c.client_name = :magic_pipe_test_foo
         c.codec = :json
         c.transport = :https
         c.https_transport_options = {} # let the defaults apply
@@ -35,6 +40,27 @@ RSpec.describe MagicPipe do
 
         expect(subject.codec).to eq MagicPipe::Codecs::Json
         expect(subject.sender).to eq MagicPipe::Senders::Sync
+      end
+
+      describe "client storage by name" do
+        it "stores the client by name so that it can be fetched later" do
+          expect {
+            subject
+          }.to change {
+            MagicPipe.lookup_client(:magic_pipe_test_foo)
+          }.from(nil).to(an_instance_of(MagicPipe::Client))
+        end
+
+        context "with multiple clients with different names" do
+          let!(:client_one) { MagicPipe.build { |c| c.client_name = :one } }
+          let!(:client_two) { MagicPipe.build { |c| c.client_name = :two } }
+
+          specify "they can be fetched independently" do
+            expect(client_one).to_not eq client_two
+            expect(MagicPipe.lookup_client(:one)).to eq client_one
+            expect(MagicPipe.lookup_client(:two)).to eq client_two
+          end
+        end
       end
     end
 

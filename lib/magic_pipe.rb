@@ -14,12 +14,32 @@ require "magic_pipe/transports"
 require "magic_pipe/client"
 
 module MagicPipe
-  def self.build(&block)
-    unless block_given?
-      raise ConfigurationError, "No configuration block provided."
+  class << self
+    def lookup_client(name)
+      @store[name.to_sym]
     end
 
-    config = Config.new(&block)
-    Client.new(config)
+    # All this should be loaded before Sidekiq
+    # or Puma start forking threads.
+    #
+    def store_client(client)
+      @store ||= {}
+      @store[client.name.to_sym] = client
+    end
+
+    def clear_clients
+      @store = {}
+    end
+
+    def build(&block)
+      unless block_given?
+        raise ConfigurationError, "No configuration block provided."
+      end
+
+      config = Config.new(&block)
+      client = Client.new(config)
+      store_client(client)
+      client
+    end
   end
 end

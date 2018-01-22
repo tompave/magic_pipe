@@ -2,6 +2,7 @@ module MagicPipe
   class Client
     def initialize(config)
       @config = config
+      @name = config.client_name
 
       @metrics = Metrics.new(config.metrics_client)
 
@@ -9,9 +10,11 @@ module MagicPipe
 
       @codec = Codecs.lookup(config.codec)
       @sender = Senders.lookup(config.sender)
+
+      @loader = Loaders.lookup(config.loader)
     end
 
-    attr_reader :config, :codec, :transport, :sender, :metrics
+    attr_reader :name, :config, :codec, :transport, :sender, :loader, :metrics
 
     def send_data(object:, topic:, wrapper: nil, time: Time.now.utc)
       sender.new(

@@ -1,6 +1,7 @@
 RSpec.describe MagicPipe::Client do
   let(:config) do
     MagicPipe::Config.new do |c|
+      c.client_name = :foo_bar
       c.codec = :json
       c.transport = :https
       c.https_transport_options = {} # let the defaults apply
@@ -18,6 +19,13 @@ RSpec.describe MagicPipe::Client do
 
       expect(subject.codec).to eq MagicPipe::Codecs::Json
       expect(subject.sender).to eq MagicPipe::Senders::Sync
+    end
+  end
+
+
+  describe "name" do
+    it "returns the configured client name" do
+      expect(subject.name).to eq :foo_bar
     end
   end
 
