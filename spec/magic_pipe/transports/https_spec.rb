@@ -40,9 +40,17 @@ RSpec.describe MagicPipe::Transports::Https do
 
   describe "submit" do
     let(:payload) { "an encoded payload" }
+    let(:metadata) do
+      {
+        topic: "marsupials",
+        producer: "Mr. Koala",
+        time: 123123123,
+        mime: "none"
+      }
+    end
 
     def perform
-      subject.submit(payload)
+      subject.submit(payload, metadata)
     end
 
     it "submits a request with the correct data" do
@@ -50,7 +58,10 @@ RSpec.describe MagicPipe::Transports::Https do
         body: payload,
         headers: {
           "Content-Type" => "application/x-yaml",
-          "Authorization" => auth_header
+          "Authorization" => auth_header,
+          "X-MagicPipe-Sent-At" => 123123123,
+          "X-MagicPipe-Topic" => "marsupials",
+          "X-MagicPipe-Producer" => "Mr. Koala"
         }
       )
 

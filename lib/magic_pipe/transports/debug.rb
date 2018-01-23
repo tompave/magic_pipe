@@ -6,8 +6,11 @@ module MagicPipe
       def initialize(*)
       end
 
-      def submit(payload)
-        $magic_pipe_out = payload
+      def submit(payload, metadata)
+        $magic_pipe_out = {
+          payload: payload,
+          metadata: metadata
+        }
       end
     end
   end

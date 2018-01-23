@@ -13,8 +13,17 @@ RSpec.describe MagicPipe::Transports::Log do
 
   describe "submit" do
     let(:payload) { "an encoded payload" }
+    let(:metadata) do
+      {
+        topic: "topic",
+        producer: "producer_name",
+        time: Time.now.utc.to_i,
+        mime: "none"
+      }
+    end
+
     def perform
-      subject.submit(payload)
+      subject.submit(payload, metadata)
     end
 
     it "just logs the payload" do

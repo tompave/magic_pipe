@@ -22,13 +22,22 @@ RSpec.describe MagicPipe::Transports::Multi do
 
   describe "submit" do
     let(:payload) { "an encoded payload" }
+    let(:metadata) do
+      {
+        topic: "topic",
+        producer: "producer_name",
+        time: Time.now.utc.to_i,
+        mime: "none"
+      }
+    end
+
     def perform
-      subject.submit(payload)
+      subject.submit(payload, metadata)
     end
 
     it "forwards the payload to all the nested transports" do
-      expect_any_instance_of(MagicPipe::Transports::Https).to receive(:submit).with(payload)
-      expect_any_instance_of(MagicPipe::Transports::Sqs).to receive(:submit).with(payload)
+      expect_any_instance_of(MagicPipe::Transports::Https).to receive(:submit).with(payload, metadata)
+      expect_any_instance_of(MagicPipe::Transports::Sqs).to receive(:submit).with(payload, metadata)
       perform
     end
 
@@ -40,7 +49,7 @@ RSpec.describe MagicPipe::Transports::Multi do
       end
 
       it "logs the error and doesn't halt the pipeline" do
-        expect_any_instance_of(MagicPipe::Transports::Sqs).to receive(:submit).with(payload)
+        expect_any_instance_of(MagicPipe::Transports::Sqs).to receive(:submit).with(payload, metadata)
 
         expect {
           perform

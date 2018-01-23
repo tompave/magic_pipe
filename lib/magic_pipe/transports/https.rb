@@ -16,9 +16,12 @@ module MagicPipe
       attr_reader :conn
 
 
-      def submit(payload)
+      def submit(payload, metadata)
         @conn.post do |r|
           r.body = payload
+          r.headers["X-MagicPipe-Sent-At"] = metadata[:time]
+          r.headers["X-MagicPipe-Topic"] = metadata[:topic]
+          r.headers["X-MagicPipe-Producer"] = metadata[:producer]
         end
       end
 

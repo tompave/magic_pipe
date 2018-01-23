@@ -16,16 +16,19 @@ module MagicPipe
 
           producer_name = client.config.producer_name
 
-          message = Envelope.new(
-            body: object,
+          metadata = {
             topic: topic,
             producer: producer_name,
-            time: time,
+            time: time.to_i,
             mime: codec::TYPE
+          }
+          envelope = Envelope.new(
+            body: object,
+            **metadata
           )
 
-          payload = codec.new(message).encode
-          transport.submit(payload)
+          payload = codec.new(envelope).encode
+          transport.submit(payload, metadata)
         end
 
 

@@ -4,18 +4,23 @@ module MagicPipe
   module Senders
     class Sync < Base
       def call
-        payload = @codec.new(message).encode
-        @transport.submit(payload)
+        metadata = build_metadata
+        envelope = build_message(metadata)
+        payload = @codec.new(envelope).encode
+        @transport.submit(payload, metadata)
       end
 
-      def message
-        Envelope.new(
-          body: data,
+      def build_message(metadata)
+        Envelope.new(body: data, **metadata)
+      end
+
+      def build_metadata
+        {
           topic: @topic,
           producer: @config.producer_name,
-          time: @time,
+          time: @time.to_i,
           mime: @codec::TYPE
-        )
+        }
       end
 
       def data

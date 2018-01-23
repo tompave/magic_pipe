@@ -9,7 +9,7 @@ module MagicPipe
 
       attr_reader :metrics, :logger
 
-      def submit(payload)
+      def submit(payload, metadata)
         raise NotImplementedError
       end
     end
