@@ -72,7 +72,7 @@ RSpec.describe MagicPipe::Senders::Async do
         "args" => [
           dec_obj,
           topic,
-          time,
+          time.to_i,
           client_name
         ]
       }

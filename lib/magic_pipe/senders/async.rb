@@ -45,7 +45,7 @@ module MagicPipe
           "args" => [
             decomposed_object,
             @topic,
-            @time,
+            @time.to_i,
             @config.client_name
           ]
         })
