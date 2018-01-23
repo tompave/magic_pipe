@@ -15,8 +15,8 @@ module MagicPipe
       end
 
 
-      def submit(payload)
-        send_message(msg)
+      def submit(payload, metadata)
+        send_message(payload, metadata)
       end
 
 
@@ -30,15 +30,23 @@ module MagicPipe
 
 
       # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/SQS/Client.html#send_message-instance_method
-      def send_message(msg)
+      def send_message(payload, metadata)
         @client.send_message({
           queue_url: queue_url, # required
-          message_body: msg, # required
+          message_body: payload, # required
           # delay_seconds: 0,
           message_attributes: {
-            "Tommaso" => {
-              string_value: "Pavese",
+            "topic" => {
+              string_value: metadata[:topic],
               data_type: "String", # required
+            },
+            "producer" => {
+              string_value: metadata[:producer],
+              data_type: "String", # required
+            },
+            "sent_at" => {
+              string_value: metadata[:time],
+              data_type: "Number", # required
             },
           }
         })
