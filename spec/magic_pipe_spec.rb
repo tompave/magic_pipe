@@ -8,6 +8,10 @@ RSpec.describe MagicPipe do
       MagicPipe.clear_clients
     end
 
+    after do
+      MagicPipe.clear_clients
+    end
+
     def good_build
       MagicPipe.build do |c|
         c.client_name = :magic_pipe_test_foo

@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "magic_pipe"
 require "webmock/rspec"
+require "timecop"
 
 require "support/record_doubles"
 
