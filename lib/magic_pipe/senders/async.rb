@@ -32,7 +32,6 @@ module MagicPipe
 
       SETTINGS = {
         "class" => Worker,
-        "queue" => "magic_pipe",
         "retry" => true
       }
 
@@ -42,6 +41,7 @@ module MagicPipe
 
       def enqueue
         options = SETTINGS.merge({
+          "queue" => queue_name,
           "args" => [
             decomposed_object,
             @topic,
@@ -52,6 +52,13 @@ module MagicPipe
         Sidekiq::Client.push(options)
       end
 
+
+      private
+
+
+      def queue_name
+        @config.async_transport_options[:queue]
+      end
 
       def decomposed_object
         loader = MagicPipe::Loaders.lookup(@config.loader)

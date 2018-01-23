@@ -16,7 +16,7 @@ module MagicPipe
 
       :https_transport_options,
       # :sqs_transport_options,
-      # :sidekiq_options,
+      :async_transport_options,
     ]
 
     attr_accessor *FIELDS
@@ -45,6 +45,7 @@ module MagicPipe
       @transport ||= :log
 
       set_https_defaults
+      set_async_defaults
     end
 
 
@@ -58,6 +59,15 @@ module MagicPipe
         open_timeout: 3
       }
       @https_transport_options = defaults.merge(@https_transport_options)
+    end
+
+
+    def set_async_defaults
+      @async_transport_options ||= {}
+      defaults = {
+        queue: "magic_pipe"
+      }
+      @async_transport_options = defaults.merge(@async_transport_options)
     end
 
 
