@@ -32,6 +32,35 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
 
 
   describe "::load" do
+    shared_examples_for "common failures" do
+      context "with an invalid record class name" do
+        let(:record_k_n) { "MagicPipe::NotExistingClass" }
+
+        it "raises an error" do
+          expect {
+            perform
+          }.to raise_error(
+            MagicPipe::LoaderError,
+            "Can't resolve class name 'MagicPipe::NotExistingClass' (ActiveRecord model)"
+          )
+        end
+      end
+
+      specify "non existing record raise the usual RecordNotFound errors" do
+        allow(MagicPipe::TestRecord).to receive(:find).and_raise(
+          StandardError,
+          "I'm pretending to be an ActiveRecord::RecordNotFound error."
+        )
+
+        expect {
+          perform
+        }.to raise_error(
+          StandardError,
+          "I'm pretending to be an ActiveRecord::RecordNotFound error."
+        )
+      end
+    end
+
     context "without wrapper" do
       def perform
         described_class.load(
@@ -42,6 +71,10 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
 
       it "fetches the record" do
         expect(perform).to eq MagicPipe::TestRecord.find(11)
+      end
+
+      describe "failures" do
+        include_examples "common failures"
       end
     end
 
@@ -60,6 +93,23 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
             MagicPipe::TestRecord.find(11)
           )
         )
+      end
+
+      describe "failures" do
+        include_examples "common failures"
+
+        context "with an invalid serializer class name" do
+          let(:serializer_k_n) { "MagicPipe::NotExistingClass" }
+
+          it "raises an error" do
+            expect {
+              perform
+            }.to raise_error(
+              MagicPipe::LoaderError,
+              "Can't resolve class name 'MagicPipe::NotExistingClass' (object serializer)"
+            )
+          end
+        end
       end
     end
   end

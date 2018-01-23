@@ -16,15 +16,26 @@ module MagicPipe
         }
       end
 
-      def self.load(record_klass_s, id, wrapper_klass_n=nil)
-        record_klass = Object.const_get(record_klass_s)
-        record = record_klass.find(id)
 
-        if wrapper_klass_n
-          wrapper_klass = Object.const_get(wrapper_klass_n)
-          wrapper_klass.new(record)
-        else
-          record
+      class << self
+        def load(record_klass_name, record_id, wrapper_klass_name=nil)
+          record_klass = load_constant!(record_klass_name, "ActiveRecord model")
+          record = record_klass.find(record_id) # let it raise ActiveRecord::RecordNotFound
+
+          if wrapper_klass_name
+            wrapper_klass = load_constant!(wrapper_klass_name, "object serializer")
+            wrapper_klass.new(record)
+          else
+            record
+          end
+        end
+
+        private
+
+        def load_constant!(name, context)
+          Object.const_get(name)
+        rescue NameError
+          raise MagicPipe::LoaderError.new(name, context)
         end
       end
     end
