@@ -64,8 +64,7 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
     context "without wrapper" do
       def perform
         described_class.load(
-          record_k_n,
-          11
+          { klass: record_k_n, id: 11 }
         )
       end
 
@@ -81,9 +80,7 @@ RSpec.describe MagicPipe::Loaders::SimpleActiveRecord do
     context "with wrapper" do
       def perform
         described_class.load(
-          record_k_n,
-          11,
-          serializer_k_n
+          { klass: record_k_n, id: 11, wrapper: serializer_k_n }
         )
       end
 
