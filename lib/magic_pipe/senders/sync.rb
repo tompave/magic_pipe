@@ -13,7 +13,8 @@ module MagicPipe
           body: data,
           topic: @topic,
           producer: @config.producer_name,
-          time: @time
+          time: @time,
+          mime: @codec::TYPE
         )
       end
 

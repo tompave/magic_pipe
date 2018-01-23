@@ -1,19 +1,21 @@
 module MagicPipe
   class Envelope
-    def initialize(body:, topic:, producer:, time:)
+    def initialize(body:, topic:, producer:, time:, mime:)
       @body = body
       @topic = topic
       @producer = producer
       @time = time.to_i
+      @mime = mime
     end
 
 
     def as_json(*)
       {
+        body: @body.as_json,
         topic: @topic,
         producer: @producer,
         time: @time,
-        body: @body.as_json
+        mime: @mime,
       }
     end
 

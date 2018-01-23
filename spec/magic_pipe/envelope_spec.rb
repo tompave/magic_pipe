@@ -3,13 +3,15 @@ RSpec.describe MagicPipe::Envelope do
   let(:topic) { "bananas" }
   let(:producer) { "acme" }
   let(:time) { Time.now.utc }
+  let(:mime) { "text/x-batman" }
 
   subject do
     described_class.new(
       body: body,
       topic: topic,
       producer: producer,
-      time: time
+      time: time,
+      mime: mime
     )
   end
 
@@ -28,6 +30,7 @@ RSpec.describe MagicPipe::Envelope do
       expect(h[:topic]).to eq topic
       expect(h[:producer]).to eq producer
       expect(h[:time]).to eq time.to_i
+      expect(h[:mime]).to eq mime
     end
   end
 end

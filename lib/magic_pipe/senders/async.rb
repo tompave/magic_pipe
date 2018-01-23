@@ -20,7 +20,8 @@ module MagicPipe
             body: object,
             topic: topic,
             producer: producer_name,
-            time: time
+            time: time,
+            mime: codec::TYPE
           )
 
           payload = codec.new(message).encode

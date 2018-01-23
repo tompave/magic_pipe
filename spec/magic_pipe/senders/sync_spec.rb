@@ -3,8 +3,12 @@ RSpec.describe MagicPipe::Senders::Sync do
   let(:topic) { "bananas" }
   let(:wrapper) { MagicPipe::TestRecordSerializer }
   let(:time) { Time.now.utc }
-  let(:codec_k) { double("codec class") }
+
+  let(:codec_k) { MagicPipe::Codecs::Yaml }
+  let(:mime) { codec_k::TYPE }
+
   let(:transport_i) { double("transport instance") }
+  
   let(:config) do
     MagicPipe::Config.new do |c|
       c.producer_name = "steak and ale pie"
@@ -40,7 +44,8 @@ RSpec.describe MagicPipe::Senders::Sync do
           body: wrapper.new(object),
           topic: topic,
           producer: "steak and ale pie",
-          time: time
+          time: time,
+          mime: mime
         )
       ).and_return(codec)
       expect(transport_i).to receive(:submit).with(payload)
