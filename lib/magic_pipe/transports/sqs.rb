@@ -24,7 +24,7 @@ module MagicPipe
 
 
       def queue_name
-        @options.fetch(:queue_name, "magic_pipe_sandbox")
+        @options.fetch(:queue)
       end
 
 
