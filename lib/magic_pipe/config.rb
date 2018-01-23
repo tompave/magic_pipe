@@ -64,15 +64,17 @@ module MagicPipe
 
 
     def set_sqs_defaults
-      return unless @sqs_transport_options
-
+      @sqs_transport_options ||= {}
       defaults = {
-        queue_name: "magic_pipe_sandbox",
+        queue: "magic_pipe",
       }
       @sqs_transport_options = defaults.merge(@sqs_transport_options)
     end
 
 
+    # Since Sidekiq is the go-to sender for production, this
+    # should always be defined.
+    #
     def set_async_defaults
       @async_transport_options ||= {}
       defaults = {

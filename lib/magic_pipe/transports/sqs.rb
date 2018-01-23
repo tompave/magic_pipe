@@ -20,55 +20,45 @@ module MagicPipe
       end
 
 
+      private
+
+
       def queue_name
         @options.fetch(:queue_name, "magic_pipe_sandbox")
       end
+
 
       def queue_url
         @queue_url ||= @client.get_queue_url(queue_name: queue_name).queue_url
       end
 
 
-      # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/SQS/Client.html#send_message-instance_method
       def send_message(payload, metadata)
         @client.send_message({
           queue_url: queue_url, # required
           message_body: payload, # required
-          # delay_seconds: 0,
-          message_attributes: {
-            "topic" => {
-              string_value: metadata[:topic],
-              data_type: "String", # required
-            },
-            "producer" => {
-              string_value: metadata[:producer],
-              data_type: "String", # required
-            },
-            "sent_at" => {
-              string_value: metadata[:time].to_s,
-              data_type: "Number", # required
-            },
-          }
+          delay_seconds: 0,
+          message_attributes: meta_attributes(metadata)
         })
       end
 
 
-      # def receive_message
-      #   @client.receive_message(
-      #     queue_url: queue_url,
-      #     attribute_names: ["All"],
-      #     message_attribute_names: ["All"],
-      #     # visibility_timeout: 0
-      #   )
-      # end
-
-
-      # def delete_message(handle)
-      #   @client.delete_message(
-      #     queue_url: queue_url,
-      #     receipt_handle: handle
-      #   )
-      # end
+      def meta_attributes(metadata)
+        {
+          "topic" => {
+            string_value: metadata[:topic],
+            data_type: "String", # required
+          },
+          "producer" => {
+            string_value: metadata[:producer],
+            data_type: "String", # required
+          },
+          "sent_at" => {
+            string_value: metadata[:time].to_s,
+            data_type: "Number", # required
+          },
+        }
+      end
     end
   end
 end

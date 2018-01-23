@@ -58,6 +58,33 @@ RSpec.describe MagicPipe::Config do
     end
 
 
+    describe "sqs_transport_options" do
+      specify "when not set, it gets pre-populated" do
+        expect(subject.sqs_transport_options).to be_a Hash
+        expect(subject.sqs_transport_options).to_not be_empty
+      end
+
+      context "with missing values" do
+        it "sets all the defaults" do
+          actual = subject.sqs_transport_options
+          expect(actual[:queue]).to eq "magic_pipe"
+        end
+      end
+
+      context "with configured values" do
+        subject do
+          described_class.new { |c| c.sqs_transport_options = conf }
+        end
+        let(:conf) { { queue: "foo_bar" } }
+
+        it "sets the defaults, but preserved the configured value" do
+          actual = subject.sqs_transport_options
+          expect(actual[:queue]).to eq "foo_bar"
+        end
+      end
+    end
+
+
     describe "async_transport_options" do
       specify "when not set, it gets pre-populated" do
         expect(subject.async_transport_options).to be_a Hash
