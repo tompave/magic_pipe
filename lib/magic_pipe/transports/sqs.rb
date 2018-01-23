@@ -45,7 +45,7 @@ module MagicPipe
               data_type: "String", # required
             },
             "sent_at" => {
-              string_value: metadata[:time],
+              string_value: metadata[:time].to_s,
               data_type: "Number", # required
             },
           }
