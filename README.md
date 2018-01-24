@@ -18,6 +18,7 @@ It provides client adapters for several popular message busses, and it's meant t
   - [Multiple pipes](#multiple-pipes)
   - [The message payloads](#the-message-payloads)
 * [Usage](#usage)
+  - [Configuration](#configuration)
 * [Dependencies](#dependencies)
 * [Use cases](#use-cases)
 * [Installation](#installation)
@@ -176,6 +177,18 @@ class Article < ActiveRecord::Base
     )
   end
 end
+```
+
+### Configuration
+
+#### Transport: SQS
+
+This transport requires credentials for the AWS API. The credentials need to be associated to an IAM user with full access to SQS, and need to be present in the system env:
+
+```
+export AWS_ACCESS_KEY_ID='foo'
+export AWS_SECRET_ACCESS_KEY='bar'
+export AWS_REGION='us-east-1'
 ```
 
 ## Dependencies
