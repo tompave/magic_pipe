@@ -30,15 +30,39 @@ RSpec.describe MagicPipe::Client do
   end
 
   describe "metrics" do
-    subject { super().metrics }
-
     it "returns a Metrics object" do
-      expect(subject).to be_a MagicPipe::Metrics
+      expect(subject.metrics).to be_a MagicPipe::Metrics
     end
   end
 
   describe "send_data" do
-    xit "runs" do
+    let(:time) { Time.now.utc }
+    let(:object) { MagicPipe::TestRecord.new(123) }
+    let(:sender) { double("sender") }
+
+    def perform
+      subject.send_data(
+        object: object,
+        topic: "mammals",
+        wrapper: MagicPipe::TestRecordSerializer,
+        time: time
+      )
+    end
+
+    it "instantiates and calls the sender" do
+      expect(MagicPipe::Senders::Sync).to receive(:new).with(
+        object,
+        "mammals",
+        MagicPipe::TestRecordSerializer,
+        time,
+        MagicPipe::Codecs::Json,
+        subject.transport, # an instiated transport object
+        config
+      ).and_return(sender)
+
+      expect(sender).to receive(:call)
+
+      perform
     end
   end
 end
