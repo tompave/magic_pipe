@@ -12,4 +12,11 @@ module MagicPipe
 end
 
 files = File.expand_path("../loaders/**/*.rb", __FILE__)
-Dir[files].each { |f| require f }
+Dir[files].each do |f|
+  begin
+    require f
+  rescue LoadError
+    # Some components have extra dependencies
+  end
+end
+
