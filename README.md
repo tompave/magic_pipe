@@ -1,5 +1,7 @@
 # MagicPipe
 
+[![Build Status](https://travis-ci.org/tompave/magic_pipe.svg?branch=master)](https://travis-ci.org/tompave/magic_pipe)
+
 MagicPipe is Ruby library to push data to remote destinations on multiple topics.
 
 It provides client adapters for several popular message busses, and it's meant to facilitate publishing messages and streaming data, in different formats and to different backends.
@@ -58,7 +60,7 @@ Transports are adapters for the different backends, and take care of establishin
 
 #### Senders
 
-Senders are glue things together and implement a processing strategy. The provided senders are:
+Senders glue things together and implement a processing strategy. The provided senders are:
 
 * Sync
 * Async (Sidekiq)
@@ -67,7 +69,7 @@ Senders are glue things together and implement a processing strategy. The provid
 
 Loaders are used with the Async sender to serialize Ruby objects into something that can be passed to Sidekiq, and then to rebuild the original Objects inside the Sidekiq workers. The provided loaders are:
 
-* SimpleActiveRecord: it takes `ActiveRecord::Base` instances and an optional wrapper (e.g. an `ActiveModel::Serializer`) and turns them into a class references (Strings) and a record ID. Then, when the Sidekiq jobs execute, it loads the record from the DB and wraps it in the serializer, if present.
+* SimpleActiveRecord: it takes `ActiveRecord::Base` instances and an optional wrapper (e.g. an `ActiveModel::Serializer`) and turns them into class references (Strings) and a record ID. Then, when the Sidekiq jobs execute, it loads the record from the DB and wraps it in the serializer, if present.
 
 ### Gluing everything together
 
