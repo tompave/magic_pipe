@@ -1,8 +1,190 @@
 # MagicPipe
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/magic_pipe`. To experiment with that code, run `bin/console` for an interactive prompt.
+MagicPipe is Ruby library to push data to remote destinations on multiple topics.
 
-TODO: Delete this and the text above, and describe your gem
+It provides client adapters for several popular message busses, and it's meant to facilitate publishing messages and streaming data, in different formats and to different backends.
+
+## Content
+
+* [Design, concepts and internals](#design-concepts-and-internals)
+  - [The moving parts](#the-moving-parts)
+    + [Codecs](#codecs)
+    + [Transports](#transports)
+    + [Senders](#senders)
+    + [Loaders](#loaders)
+  - [Gluing everything together](#gluing-everything-together)
+  - [Multiple pipes](#multiple-pipes)
+* [Usage](#usage)
+* [Dependencies](#dependencies)
+* [Use cases](#use-cases)
+* [Installation](#installation)
+
+## Design, concepts and internals
+
+Its design principles are:
+
+* It should be plug and play, with minimal configuration -- it's an opinionated library.
+* It should support different message formats and backends with a consistent interface.
+* It should allow for multiple backends to be targeted at the same time.
+* It should be extendable and customizable.
+
+To achieve these goals, MagicPipe adopts a modular design with interchangeable parts.
+
+### The moving parts
+
+The four main units of work are codecs, transports, senders and loaders. MagicPipe provides a set of classes out of the box, but users of the library can configure their own custom classes that implement the correct interface.
+
+#### Codecs
+
+Codecs accept a Ruby object and produce an encoded output. The input must respond to `as_json` and return a Hash. The provided codecs are:
+
+* Yaml
+* JSON
+* MessagePack
+* Thrift (work in progress)
+
+#### Transports
+
+Transports are adapters for the different backends, and take care of establishing connections and submitting the payloads. The provided transports are:
+
+* Debug
+* Log
+* HTTPS
+* SQS
+* Kafka (work in progress)
+* DynamoDB (work in progress)
+* Multi (allows to target different transports at the same time)
+
+#### Senders
+
+Senders are glue things together and implement a processing strategy. The provided senders are:
+
+* Sync
+* Async (Sidekiq)
+
+#### Loaders
+
+Loaders are used with the Async sender to serialize Ruby objects into something that can be passed to Sidekiq, and then to rebuild the original Objects inside the Sidekiq workers. The provided loaders are:
+
+* SimpleActiveRecord: it takes `ActiveRecord::Base` instances and an optional wrapper (e.g. an `ActiveModel::Serializer`) and turns them into a class references (Strings) and a record ID. Then, when the Sidekiq jobs execute, it loads the record from the DB and wraps it in the serializer, if present.
+
+### Gluing everything together
+
+A MagicPipe client encapsulates the configured parts. For example, clients with a single and multiple transports can be represented like this:
+
+```
+Client
+├ Configuration
+└ Sender
+  ├ Codec
+  ├ (Loader)
+  └ Transport
+
+Client
+├ Configuration
+└ Sender
+  ├ Codec
+  ├ (Loader)
+  └ Transports
+    ├ Transport A
+    ├ Transport B
+    └ Transport C
+```
+
+A client can only have a single codec and sender, but can have multiple transports to submit data to multiple backends. This is particularly efficient because it allows to reduce the number of DB queries to re-load the data, when using the async sender.
+
+### Multiple pipes
+
+Multiple clients with different configurations can be used together in the same process.
+
+The main use case is to support different codecs (message formats). Some applications may in fact need to emit messages with different formats to different backends, for example JSON to both SQS and a remote HTTPS endpoint, and Thrift to Kafka.
+
+Another use case is to use different Sidekiq queues (and worker pools) for different topics, which can be accomplished by using different MagicPipe clients for different types of objects.
+
+## Usage
+
+Create and configure a MagicPipe client:
+(Temporary API! Still a work in progress)
+
+```ruby
+require "magic_pipe/senders/async"
+require "magic_pipe/transports/https"
+require "magic_pipe/transports/sqs"
+
+$magic_pipe = MagicPipe.build do |mp|
+  mp.sender = :async
+  mp.loader = :simple_active_record
+
+  mp.codec = :json
+  mp.transports = [:https, :sqs]
+
+  mp.sidekiq_options = {
+    queue: "magic_pipe"
+  }
+  mp.https_transport_options = {
+    url: "https://my.receiver.service/foo",
+    auth_token: "bar",
+  }
+  mp.sqs_transport_options = {
+    queue: "my_data_stream"
+  }
+
+  mp.logger = Rails.logger
+  mp.metrics_client = $statsd_client
+end
+```
+
+Then, to submit a message:
+
+```ruby
+$magic_pipe.send_data(
+  object: object,
+  topic: "my_topic",
+  wrapper: nil, # default
+  time: Time.now.utc # default
+)
+```
+
+A more concrete example, with an active record object:
+
+```ruby
+class Article < ActiveRecord::Base
+  after_commit :send_on_magic_pipe
+
+  private
+
+  def send_on_magic_pipe
+    $magic_pipe.send_data(
+      object: self,
+      topic: "articles",
+      wrapper: Serialers::InventoryArticleSerializer,
+      time: updated_at
+    )
+  end
+end
+```
+
+## Dependencies
+
+Becasuse of MagicPipe's modular design, and in order to keep a small installation footprint, all of its dependencies are optional. Users of the library need to manually install the required dependencies in their projects.
+
+The Ruby gems MagicPipe's modules depended on are:
+
+* Senders:
+  - Async: `sidekiq`
+* Transports:
+  - SQS: `aws-sdk-sqs`
+  - HTTPS: `faraday`, `typhoeus`
+* Codecs:
+  - JSON: `oj` (optional, will fallback to `json` from the stdlib if `oj` is missing)
+  - MessagePack: `msgpack`
+
+## Use cases
+
+TODO
+
+* event driven architectures
+* streaming domain data to replicate it somewhere else
 
 ## Installation
 
@@ -19,41 +201,3 @@ And then execute:
 Or install it yourself as:
 
     $ gem install magic_pipe
-
-## Usage
-
-```ruby
-client = MagicPipe.build do |mp|
-  mp.codec = :json
-  mp.sender = :async
-  mp.transport = :https
-
-  mp.sidekiq_options = {}
-  mp.https_transport_options = {
-    url: "https://something.dev/foo",
-    auth_token: "bar",
-    timeout: 1,
-    open_timeout: 1
-  }
-  mp.sqs_transport_options = {
-    aws_access_key_id: ENV["A"],
-    aws_secret_access_key: ENV["B"],
-    queue_name: "foooo"
-  }
-
-  mp.logger = Rails.logger
-  mp.metrics_client = STATSD_CLIENT
-end
-
-client.send_data(object)
-```
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/magic_pipe.
