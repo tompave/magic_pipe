@@ -171,7 +171,7 @@ class Article < ActiveRecord::Base
     $magic_pipe.send_data(
       object: self,
       topic: "articles",
-      wrapper: Serialers::InventoryArticleSerializer,
+      wrapper: Serializers::InventoryArticleSerializer,
       time: updated_at
     )
   end
