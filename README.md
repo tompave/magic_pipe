@@ -14,6 +14,7 @@ It provides client adapters for several popular message busses, and it's meant t
     + [Loaders](#loaders)
   - [Gluing everything together](#gluing-everything-together)
   - [Multiple pipes](#multiple-pipes)
+  - [The message payloads](#the-message-payloads)
 * [Usage](#usage)
 * [Dependencies](#dependencies)
 * [Use cases](#use-cases)
@@ -101,6 +102,17 @@ The main use case is to support different codecs (message formats). Some applica
 
 Another use case is to use different Sidekiq queues (and worker pools) for different topics, which can be accomplished by using different MagicPipe clients for different types of objects.
 
+### The message payloads
+
+MagicPipe wraps the payloads in message envelopes with extra metadata. These extra attributes are:
+
+* the message topic (string)
+* the producer name (string)
+* the submission timestamp, captured when `client#send_data` is invoked (interger)
+* the payload mime type, e.g. `application/json` (string)
+
+Some transports will additionally provide this metadata as message meta attributes. For example, the HTTPS transports will set them as custom HTTP request headers, and the SQS transports will set them as the SQS message custom attributes.
+
 ## Usage
 
 Create and configure a MagicPipe client:
@@ -168,7 +180,7 @@ end
 
 Becasuse of MagicPipe's modular design, and in order to keep a small installation footprint, all of its dependencies are optional. Users of the library need to manually install the required dependencies in their projects.
 
-The Ruby gems MagicPipe's modules depended on are:
+The Ruby gems MagicPipe's modules depend on are:
 
 * Senders:
   - Async: `sidekiq`
