@@ -110,10 +110,10 @@ MagicPipe wraps the payloads in message envelopes with extra metadata. These ext
 
 * the message topic (string)
 * the producer name (string)
-* the submission timestamp, captured when `client#send_data` is invoked (interger)
+* the submission timestamp, captured when `client#send_data` is invoked (integer)
 * the payload mime type, e.g. `application/json` (string)
 
-Some transports will additionally provide this metadata as message meta attributes. For example, the HTTPS transports will set them as custom HTTP request headers, and the SQS transports will set them as the SQS message custom attributes.
+Some transports will additionally provide this metadata as message meta attributes. For example, the HTTPS transport will set them as custom HTTP request headers, and the SQS transport will set them as the SQS message custom attributes.
 
 ## Usage
 
