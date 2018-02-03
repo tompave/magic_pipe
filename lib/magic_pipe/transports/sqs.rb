@@ -60,6 +60,10 @@ module MagicPipe
             string_value: metadata[:time].to_s,
             data_type: "Number", # required
           },
+          "mime" => {
+            string_value: metadata[:mime],
+            data_type: "String", # required
+          },
         }
       end
     end
