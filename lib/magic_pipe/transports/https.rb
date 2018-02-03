@@ -16,6 +16,9 @@ module MagicPipe
       attr_reader :conn
 
 
+      # TODO: should this raise an error on failure?
+      # So that it can be retried?
+      #
       def submit(payload, metadata)
         @conn.post do |r|
           r.body = payload

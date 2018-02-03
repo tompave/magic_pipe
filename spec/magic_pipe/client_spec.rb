@@ -65,5 +65,11 @@ RSpec.describe MagicPipe::Client do
 
       perform
     end
+
+    it "returns true" do
+      stub_request(:post, "https://localhost:8080/foo").
+        to_return(status: 200, body: "", headers: {})
+      expect(perform).to eq true
+    end
   end
 end

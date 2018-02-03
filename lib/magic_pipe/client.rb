@@ -27,6 +27,7 @@ module MagicPipe
         @config,
         @metrics
       ).call
+      true
     end
 
 
