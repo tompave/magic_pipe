@@ -37,7 +37,7 @@ RSpec.describe MagicPipe::Transports::Sqs do
         topic: "marsupials",
         producer: "Mr. Koala",
         time: 123123123,
-        mime: "none"
+        mime: "foobar"
       }
     end
 
@@ -63,6 +63,10 @@ RSpec.describe MagicPipe::Transports::Sqs do
             "sent_at" => {
               string_value: "123123123",
               data_type: "Number",
+            },
+            "mime" => {
+              string_value: "foobar",
+              data_type: "String",
             },
           }
         }
