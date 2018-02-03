@@ -8,6 +8,8 @@ module MagicPipe
       @mime = mime
     end
 
+    attr_accessor :body
+
 
     def as_json(*)
       {
