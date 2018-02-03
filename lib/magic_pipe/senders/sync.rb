@@ -1,16 +1,19 @@
 require "magic_pipe/senders/base"
+require "magic_pipe/senders/metrics_mixin"
 
 module MagicPipe
   module Senders
     class Sync < Base
+      include MetricsMixin
+
       def call
         metadata = build_metadata
         envelope = build_message(metadata)
         payload = @codec.new(envelope).encode
         @transport.submit(payload, metadata)
-        track_success
+        track_success(@metrics, @topic)
       rescue => e
-        track_failure
+        track_failure(@metrics, @topic)
         raise e
       end
 
@@ -29,20 +32,6 @@ module MagicPipe
 
       def data
         @wrapper ? @wrapper.new(@object) : @object
-      end
-
-      def track_success
-        @metrics.increment(
-          "magic_pipe.senders.sync.mgs_sent",
-          tags: ["topic:#{@topic}"]
-        )
-      end
-
-      def track_failure
-        @metrics.increment(
-          "magic_pipe.senders.sync.failure",
-          tags: ["topic:#{@topic}"]
-        )
       end
     end
   end

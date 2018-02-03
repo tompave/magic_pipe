@@ -9,13 +9,18 @@ RSpec.describe MagicPipe::Senders::Sync do
 
   let(:transport_i) { double("transport instance") }
   
+  let(:statsd) { double("Statsd", increment: nil) }
   let(:config) do
     MagicPipe::Config.new do |c|
       c.producer_name = "steak and ale pie"
+      c.sender = :sync
+      c.metrics_client = statsd
     end
   end
 
-  let(:metrics) { double("Metrics", increment: nil) }
+  let(:metrics) do
+    MagicPipe::Metrics.new(config)
+  end
 
   let(:envelope) do
     MagicPipe::Envelope.new(
@@ -77,9 +82,9 @@ RSpec.describe MagicPipe::Senders::Sync do
         end
 
         it "tracks the action with the metrics object" do
-          expect(metrics).to receive(:increment).with(
-            "magic_pipe.senders.sync.mgs_sent",
-            { tags: array_including("topic:#{topic}") }
+          expect(statsd).to receive(:increment).with(
+            "magic_pipe.senders.mgs_sent",
+            { tags: array_including("topic:#{topic}", "sender:sync") }
           )
           perform
         end
@@ -99,9 +104,9 @@ RSpec.describe MagicPipe::Senders::Sync do
         end
 
         it "tracks the failure with the metrics object" do
-          expect(metrics).to receive(:increment).with(
-            "magic_pipe.senders.sync.failure",
-            { tags: array_including("topic:#{topic}") }
+          expect(statsd).to receive(:increment).with(
+            "magic_pipe.senders.failure",
+            { tags: array_including("topic:#{topic}", "sender:sync") }
           )
           perform
         end

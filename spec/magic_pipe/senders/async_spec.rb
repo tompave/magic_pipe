@@ -15,6 +15,7 @@ RSpec.describe MagicPipe::Senders::Async do
   let(:client_name) { :magic_pipe_test_client_4325 }
   let(:producer_name) { "Mr Ducky Duck Face" }
 
+  let(:statsd) { double("Statsd", increment: nil) }
   let(:client) do
     MagicPipe.build do |mp|
       mp.client_name = client_name
@@ -24,6 +25,8 @@ RSpec.describe MagicPipe::Senders::Async do
       mp.loader = :simple_active_record
       mp.transport = :log
       mp.sender = :async
+
+      mp.metrics_client = statsd
     end
   end
 
@@ -128,9 +131,9 @@ RSpec.describe MagicPipe::Senders::Async do
           end
 
           it "tracks the action with the metrics object" do
-            expect(client.metrics).to receive(:increment).with(
-              "magic_pipe.senders.async.mgs_sent",
-              { tags: array_including("topic:#{topic}") }
+            expect(statsd).to receive(:increment).with(
+              "magic_pipe.senders.mgs_sent",
+              { tags: array_including("topic:#{topic}", "sender:async") }
             )
             perform
           end
@@ -149,9 +152,9 @@ RSpec.describe MagicPipe::Senders::Async do
           end
 
           it "tracks the failure with the metrics object" do
-            expect(client.metrics).to receive(:increment).with(
-              "magic_pipe.senders.async.failure",
-              { tags: array_including("topic:#{topic}") }
+            expect(statsd).to receive(:increment).with(
+              "magic_pipe.senders.failure",
+              { tags: array_including("topic:#{topic}", "sender:async") }
             )
             perform
           end

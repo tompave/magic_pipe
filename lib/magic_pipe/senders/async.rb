@@ -1,11 +1,13 @@
 require 'sidekiq'
 require "magic_pipe/senders/base"
+require "magic_pipe/senders/metrics_mixin"
 
 module MagicPipe
   module Senders
     class Async < Base
       class Worker
         include Sidekiq::Worker
+        include Senders::MetricsMixin
 
         def perform(decomposed_object, topic, time, client_name)
           client = MagicPipe.lookup_client(client_name)
@@ -27,24 +29,10 @@ module MagicPipe
           payload = codec.new(envelope).encode
           client.transport.submit(payload, metadata)
 
-          track_success(client, topic)
+          track_success(client.metrics, topic)
         rescue => e
-          track_failure(client, topic)
+          track_failure(client.metrics, topic)
           raise e
-        end
-
-        def track_success(client, topic)
-          client.metrics.increment(
-            "magic_pipe.senders.async.mgs_sent",
-            tags: ["topic:#{topic}"]
-          )
-        end
-
-        def track_failure(client, topic)
-          client.metrics.increment(
-            "magic_pipe.senders.async.failure",
-            tags: ["topic:#{topic}"]
-          )
         end
       end
 
