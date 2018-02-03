@@ -11,7 +11,7 @@ RSpec.describe MagicPipe::Transports::Sqs do
   end
   let(:queue_url) { "https://fake.sqs.url/test_queue" }
 
-  let(:metrics) { MagicPipe::Metrics.new(config.metrics_client) }
+  let(:metrics) { MagicPipe::Metrics.new(config) }
   let(:aws_client) { instance_double(Aws::SQS::Client) }
 
   subject { described_class.new(config, metrics) }

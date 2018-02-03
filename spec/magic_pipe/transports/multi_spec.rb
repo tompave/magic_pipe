@@ -6,7 +6,7 @@ RSpec.describe MagicPipe::Transports::Multi do
     end
   end
 
-  let(:metrics) { MagicPipe::Metrics.new(config.metrics_client) }
+  let(:metrics) { MagicPipe::Metrics.new(config) }
 
   subject do
     described_class.new(config, metrics)

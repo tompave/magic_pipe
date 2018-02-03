@@ -4,7 +4,7 @@ module MagicPipe
       @config = config
       @name = config.client_name
 
-      @metrics = Metrics.new(config.metrics_client)
+      @metrics = Metrics.new(@config)
 
       @transport = build_transport
 
