@@ -13,6 +13,8 @@ require "magic_pipe/transports"
 
 require "magic_pipe/client"
 
+require "pry"
+
 module MagicPipe
   class << self
     def lookup_client(name)

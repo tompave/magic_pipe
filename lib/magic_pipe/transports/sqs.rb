@@ -12,10 +12,13 @@ module MagicPipe
         super(config, metrics)
         @options = @config.sqs_transport_options
         @client = Aws::SQS::Client.new
+        @name = "sqs"
       end
 
+      attr_reader :name
 
-      def submit(payload, metadata)
+
+      def do_submit(payload, metadata)
         send_message(payload, metadata)
       end
 

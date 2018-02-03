@@ -11,21 +11,21 @@ module MagicPipe
         super(config, metrics)
         @options = @config.https_transport_options
         @conn = build_connection
+        @name = "https"
       end
 
-      attr_reader :conn
+      attr_reader :conn, :name
 
 
-      # TODO: should this raise an error on failure?
-      # So that it can be retried?
-      #
-      def submit(payload, metadata)
-        @conn.post do |r|
+      def do_submit(payload, metadata)
+        response = @conn.post do |r|
           r.body = payload
           r.headers["X-MagicPipe-Sent-At"] = metadata[:time]
           r.headers["X-MagicPipe-Topic"] = metadata[:topic]
           r.headers["X-MagicPipe-Producer"] = metadata[:producer]
         end
+
+        response.success?
       end
 
 
