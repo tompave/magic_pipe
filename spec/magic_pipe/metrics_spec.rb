@@ -1,7 +1,6 @@
 RSpec.describe MagicPipe::Metrics do
-  let(:statsd) do
-    double("Statsd client", increment: nil)
-  end
+  let(:statsd) { double("Statsd client", increment: nil) }
+  let(:transport) { :sqs }
 
   let(:config) do
     MagicPipe::Config.new do |c|
@@ -9,7 +8,7 @@ RSpec.describe MagicPipe::Metrics do
       c.client_name = :foo_bar
       c.loader = :custom_loader
       c.codec = :json
-      c.transport = :sqs
+      c.transport = transport
       c.sender = :sync
       c.metrics_client = statsd
     end
@@ -37,23 +36,58 @@ RSpec.describe MagicPipe::Metrics do
     end
 
 
-    it "augments the tags with the default tags" do
-      expect(statsd).to receive(:increment).with(
-        "foo.bar",
-        {
-          tags: [
-            "producer:FooBar_Test",
-            "pipe_instance:foo_bar",
-            "loader:custom_loader",
-            "codec:json",
-            "transport:sqs",
-            "sender:sync",
-            "qwe:rty", # the explicitly passed one!
-          ]
-        }
-      )
+    describe "it augments the tags with the default tags" do
+      specify "with custom tags" do
+        expect(statsd).to receive(:increment).with(
+          "foo.bar",
+          {
+            tags: [
+              "producer:FooBar_Test",
+              "pipe_instance:foo_bar",
+              "loader:custom_loader",
+              "codec:json",
+              "transport:sqs",
+              "sender:sync",
+              "qwe:rty", # the explicitly passed one!
+            ]
+          }
+        )
 
-      subject.increment("foo.bar", tags: ["qwe:rty"])
+        subject.increment("foo.bar", tags: ["qwe:rty"])
+      end
+
+      specify "without extra tags" do
+        expect(statsd).to receive(:increment).with(
+          "foo.bar",
+          {
+            tags: [
+              "producer:FooBar_Test",
+              "pipe_instance:foo_bar",
+              "loader:custom_loader",
+              "codec:json",
+              "transport:sqs",
+              "sender:sync",
+            ]
+          }
+        )
+
+        subject.increment("foo.bar")
+      end
+    end
+
+
+    describe "with multiple transports" do
+      class MagicPipe::MyCustomTransport; end;
+      let(:transport) { [:sqs, :log, MagicPipe::MyCustomTransport] }
+
+      it "builds a composite transport tag" do
+        expect(statsd).to receive(:increment).with(
+          "foo.bar",
+          { tags: array_including("transport:multi_sqs-log-MagicPipeMyCustomTransport") }
+        )
+
+        subject.increment("foo.bar")
+      end
     end
   end
 end

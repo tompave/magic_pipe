@@ -32,7 +32,15 @@ module MagicPipe
 
     def transport_tag(config)
       t = config.transport
-      t.is_a?(Array) ? "multi" : t.to_s
+      if t.is_a?(Array)
+        "multi_" + t.map { |s| sanitize_tag_string(s) }.join("-")
+      else
+        t.to_s
+      end
+    end
+
+    def sanitize_tag_string(value)
+      value.to_s.tr(":. /", "")
     end
 
     def method_missing(name, *args, &block)
