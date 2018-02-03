@@ -8,6 +8,10 @@ module MagicPipe
         envelope = build_message(metadata)
         payload = @codec.new(envelope).encode
         @transport.submit(payload, metadata)
+        track_success
+      rescue => e
+        track_failure
+        raise e
       end
 
       def build_message(metadata)
@@ -25,6 +29,20 @@ module MagicPipe
 
       def data
         @wrapper ? @wrapper.new(@object) : @object
+      end
+
+      def track_success
+        @metrics.increment(
+          "magic_pipe.senders.sync.mgs_sent",
+          tags: ["topic:#{@topic}"]
+        )
+      end
+
+      def track_failure
+        @metrics.increment(
+          "magic_pipe.senders.sync.failure",
+          tags: ["topic:#{@topic}"]
+        )
       end
     end
   end

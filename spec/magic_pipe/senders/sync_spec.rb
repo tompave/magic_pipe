@@ -15,6 +15,8 @@ RSpec.describe MagicPipe::Senders::Sync do
     end
   end
 
+  let(:metrics) { double("Metrics", increment: nil) }
+
   let(:envelope) do
     MagicPipe::Envelope.new(
       body: wrapper.new(object),
@@ -42,7 +44,8 @@ RSpec.describe MagicPipe::Senders::Sync do
       time,
       codec_k,
       transport_i,
-      config
+      config,
+      metrics
     )
   end
 
@@ -53,15 +56,56 @@ RSpec.describe MagicPipe::Senders::Sync do
   end
 
   describe "call" do
-    subject { super().call }
+    def perform
+      subject.call
+    end
+
+    let(:payload) { double("encoded payload") }
+    let(:codec) { double("codec instance", encode: payload) }
 
     it "encodes the data with the codec and sends it with the transport" do
-      payload = double("encoded payload")
-      codec = double("codec instance", encode: payload)
       expect(codec_k).to receive(:new).with(envelope).and_return(codec)
       expect(transport_i).to receive(:submit).with(payload, metadata)
+      perform
+    end
 
-      subject
+    describe "tracking and metrics" do
+      context "on success" do
+        before do
+          allow(codec_k).to receive(:new).with(envelope).and_return(codec)
+          allow(transport_i).to receive(:submit).with(payload, metadata)
+        end
+
+        it "tracks the action with the metrics object" do
+          expect(metrics).to receive(:increment).with(
+            "magic_pipe.senders.sync.mgs_sent",
+            { tags: array_including("topic:#{topic}") }
+          )
+          perform
+        end
+      end
+
+      context "on failure" do
+        before do
+          allow(codec_k).to receive(:new).with(envelope).and_return(codec)
+          allow(transport_i).to receive(:submit).with(payload, metadata) do
+            raise MagicPipe::Error, "oh no"
+          end
+        end
+
+        def perform
+          super
+        rescue MagicPipe::Error
+        end
+
+        it "tracks the failure with the metrics object" do
+          expect(metrics).to receive(:increment).with(
+            "magic_pipe.senders.sync.failure",
+            { tags: array_including("topic:#{topic}") }
+          )
+          perform
+        end
+      end
     end
   end
 end

@@ -24,7 +24,8 @@ module MagicPipe
         time,
         codec,
         transport,
-        @config
+        @config,
+        @metrics
       ).call
     end
 

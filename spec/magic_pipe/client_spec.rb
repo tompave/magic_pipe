@@ -57,7 +57,8 @@ RSpec.describe MagicPipe::Client do
         time,
         MagicPipe::Codecs::Json,
         subject.transport, # an instiated transport object
-        config
+        config,
+        subject.metrics
       ).and_return(sender)
 
       expect(sender).to receive(:call)

@@ -26,6 +26,25 @@ module MagicPipe
 
           payload = codec.new(envelope).encode
           client.transport.submit(payload, metadata)
+
+          track_success(client, topic)
+        rescue => e
+          track_failure(client, topic)
+          raise e
+        end
+
+        def track_success(client, topic)
+          client.metrics.increment(
+            "magic_pipe.senders.async.mgs_sent",
+            tags: ["topic:#{topic}"]
+          )
+        end
+
+        def track_failure(client, topic)
+          client.metrics.increment(
+            "magic_pipe.senders.async.failure",
+            tags: ["topic:#{topic}"]
+          )
         end
       end
 

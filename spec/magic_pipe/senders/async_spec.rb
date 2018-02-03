@@ -46,7 +46,8 @@ RSpec.describe MagicPipe::Senders::Async do
       time,
       client.codec,
       client.transport,
-      client.config
+      client.config,
+      client.metrics
     )
   end
 
@@ -117,6 +118,44 @@ RSpec.describe MagicPipe::Senders::Async do
         )
 
         perform
+      end
+
+
+      describe "tracking and metrics" do
+        context "on success" do
+          before do
+            allow(client.transport).to receive(:submit)
+          end
+
+          it "tracks the action with the metrics object" do
+            expect(client.metrics).to receive(:increment).with(
+              "magic_pipe.senders.async.mgs_sent",
+              { tags: array_including("topic:#{topic}") }
+            )
+            perform
+          end
+        end
+
+        context "on failure" do
+          before do
+            allow(client.transport).to receive(:submit) do
+              raise MagicPipe::Error, "oh no"
+            end
+          end
+
+          def perform
+            super
+          rescue MagicPipe::Error
+          end
+
+          it "tracks the failure with the metrics object" do
+            expect(client.metrics).to receive(:increment).with(
+              "magic_pipe.senders.async.failure",
+              { tags: array_including("topic:#{topic}") }
+            )
+            perform
+          end
+        end
       end
     end
   end
