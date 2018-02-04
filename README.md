@@ -1,6 +1,6 @@
 # MagicPipe
 
-[![Build Status](https://travis-ci.org/tompave/magic_pipe.svg?branch=master)](https://travis-ci.org/tompave/magic_pipe)
+[![Build Status](https://travis-ci.org/tompave/magic_pipe.svg?branch=master)](https://travis-ci.org/tompave/magic_pipe) [![Gem Version](https://badge.fury.io/rb/magic_pipe.svg)](https://badge.fury.io/rb/magic_pipe)
 
 MagicPipe is a Ruby library to push data to remote destinations on multiple topics.
 
