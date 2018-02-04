@@ -80,13 +80,13 @@ DEPENDENCIES
   magic_pipe!
   msgpack
   oj
-  pry
+  pry (~> 0.11)
   rake (~> 10.0)
   rspec (~> 3.0)
-  sidekiq (~> 5.0)
-  timecop
+  sidekiq
+  timecop (~> 0.9)
   typhoeus
-  webmock
+  webmock (~> 3.3)
 
 BUNDLED WITH
    1.16.1
