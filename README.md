@@ -181,6 +181,17 @@ end
 
 ### Configuration
 
+The [`MagicPipe::Config`](https://github.com/tompave/magic_pipe/blob/master/lib/magic_pipe/config.rb) class lists all supported configuration options and their default values.
+
+Users of the library are strongly encouraged to set explicit values for these settings:
+
+* `client_name`: used internally to identify a specific magic pipe client instance, for example when handing over the message publication to Sidekiq.
+* `producer_name`: the name of your application, as it should appear in the metadata of the published messages.
+* `logger`: when used in Rails, this should be set to `Rails.logger`.
+* `metrics_client`: to collect operational metrics. Wrapped by [`MagicPipe::Metrics`](https://github.com/tompave/magic_pipe/blob/master/lib/magic_pipe/metrics.rb). It's mainly designed to work with [DataDog's StatsD](https://rubygems.org/gems/dogstatsd-ruby) out of the box, but any stats collector library would work, if you provide a thin adapter wrapper. If not configured, the default implementation will simply send the metrics to the logger.
+
+More specific configuration is then required for the different modules of the library, when used.
+
 #### Transport: SQS
 
 This transport requires credentials for the AWS API. The credentials need to be associated to an IAM user with full access to SQS, and need to be present in the system env:
