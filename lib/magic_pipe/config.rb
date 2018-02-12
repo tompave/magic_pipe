@@ -55,7 +55,8 @@ module MagicPipe
 
       defaults = {
         url: "https://localhost:8080/foo",
-        auth_token: "missing",
+        basic_auth_user: "missing",
+        basic_auth_password: "x",
         timeout: 2,
         open_timeout: 3,
       }

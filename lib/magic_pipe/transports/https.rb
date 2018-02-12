@@ -35,8 +35,12 @@ module MagicPipe
         @options.fetch(:url)
       end
 
-      def auth_token
-        @options.fetch(:auth_token)
+      def basic_auth_user
+        @options.fetch(:basic_auth_user)
+      end
+
+      def basic_auth_password
+        @options.fetch(:basic_auth_password)
       end
 
       def timeout
@@ -64,7 +68,7 @@ module MagicPipe
       def build_connection
         Faraday.new(url) do |f|
           f.request :retry, max: 2, interval: 0.1, backoff_factor: 2
-          f.request :basic_auth, auth_token, 'x'
+          f.request :basic_auth, basic_auth_user, basic_auth_password
 
           f.headers['Content-Type'] = content_type
           f.headers['User-Agent'] = user_agent

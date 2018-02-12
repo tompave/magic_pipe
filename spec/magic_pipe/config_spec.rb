@@ -35,7 +35,8 @@ RSpec.describe MagicPipe::Config do
             actual = subject.https_transport_options
 
             expect(actual[:url]).to_not be_nil
-            expect(actual[:auth_token]).to_not be_nil
+            expect(actual[:basic_auth_user]).to_not be_nil
+            expect(actual[:basic_auth_password]).to_not be_nil
             expect(actual[:timeout]).to_not be_nil
             expect(actual[:open_timeout]).to_not be_nil
           end
@@ -49,7 +50,8 @@ RSpec.describe MagicPipe::Config do
 
             expect(actual[:url]).to eq "http://foo.bar"
 
-            expect(actual[:auth_token]).to_not be_nil
+            expect(actual[:basic_auth_user]).to_not be_nil
+            expect(actual[:basic_auth_password]).to_not be_nil
             expect(actual[:timeout]).to_not be_nil
             expect(actual[:open_timeout]).to_not be_nil
           end

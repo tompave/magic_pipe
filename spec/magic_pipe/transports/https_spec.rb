@@ -2,8 +2,8 @@ require "base64"
 
 RSpec.describe MagicPipe::Transports::Https do
   let(:url) { "https://localhost:8080/test" }
-  let(:auth_token) { "test-token" }
-  let(:auth_header) { "Basic " + Base64.strict_encode64("#{auth_token}:x") }
+  let(:basic_auth_user) { "test-token" }
+  let(:auth_header) { "Basic " + Base64.strict_encode64("#{basic_auth_user}:x") }
 
   let(:config) do
     MagicPipe::Config.new do |c|
@@ -12,7 +12,8 @@ RSpec.describe MagicPipe::Transports::Https do
 
       c.https_transport_options = {
         url: url,
-        auth_token: auth_token,
+        basic_auth_user: basic_auth_user,
+        basic_auth_password: "x",
       }
     end
   end
