@@ -230,7 +230,7 @@ The `dynamic_path_builder` setting should be a callable that will receive the to
 
 ```ruby
 faraday_connection.post do |r|
-  r.url dynamic_path_builder.call(metadata[:topic])
+  r.url dynamic_path_builder.call(current_topic)
 end
 ```
 
