@@ -39,16 +39,25 @@ RSpec.describe MagicPipe::Config do
             expect(actual[:basic_auth_password]).to_not be_nil
             expect(actual[:timeout]).to_not be_nil
             expect(actual[:open_timeout]).to_not be_nil
+
+            expect(actual[:dynamic_path_builder]).to be_nil
           end
         end
 
         context "with configured values" do
-          let(:conf) { { url: "http://foo.bar" } }
+          let(:fn) { -> (x) { x } }
+          let(:conf) do
+            {
+              url: "http://foo.bar",
+              dynamic_path_builder: fn
+            }
+          end
 
           it "sets the defaults, but preserved the configured value" do
             actual = subject.https_transport_options
 
             expect(actual[:url]).to eq "http://foo.bar"
+            expect(actual[:dynamic_path_builder]).to eq fn
 
             expect(actual[:basic_auth_user]).to_not be_nil
             expect(actual[:basic_auth_password]).to_not be_nil

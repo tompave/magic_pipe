@@ -127,6 +127,9 @@ require "magic_pipe/transports/https"
 require "magic_pipe/transports/sqs"
 
 $magic_pipe = MagicPipe.build do |mp|
+  mp.client_name = :my_magic_pipe
+  mp.producer_name = "My Awesome Service (Production)"
+
   mp.sender = :async
   mp.loader = :simple_active_record
 
@@ -138,7 +141,7 @@ $magic_pipe = MagicPipe.build do |mp|
   }
   mp.https_transport_options = {
     url: "https://my.receiver.service/foo",
-    auth_token: "bar",
+    basic_auth_user: "bar",
   }
   mp.sqs_transport_options = {
     queue: "my_data_stream"
@@ -201,6 +204,42 @@ export AWS_ACCESS_KEY_ID='foo'
 export AWS_SECRET_ACCESS_KEY='bar'
 export AWS_REGION='us-east-1'
 ```
+
+#### Transport: HTTPS
+
+This transport builds a [Faraday](https://github.com/lostisland/faraday) connection. A number of options can be configured:
+
+```ruby
+$magic_pipe = MagicPipe.build do |mp|
+  mp.transport = :https
+
+  mp.https_transport_options = {
+    url: "https://my.receiver.service/messages",
+    dynamic_path_builder: -> (topic) { topic }
+
+    basic_auth_user: "foo",
+    basic_auth_password: "bar",
+
+    timeout: 2,
+    open_timeout: 3,
+  }
+end
+```
+
+The `dynamic_path_builder` setting should be a callable that will receive the topic name. It defaults to `nil`, in which case the base URL will be used as is. If present, its return value will be used in Faraday as:
+
+```ruby
+faraday_connection.post do |r|
+  r.url dynamic_path_builder.call(metadata[:topic])
+end
+```
+
+Which will result in requests as:
+
+```
+HTTP POST https://my.receiver.service/messages/a-topic-name
+```
+
 
 ## Dependencies
 

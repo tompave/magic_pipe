@@ -1,20 +1,23 @@
 require "base64"
 
 RSpec.describe MagicPipe::Transports::Https do
-  let(:url) { "https://localhost:8080/test" }
+  let(:base_url) { "https://localhost:8080/test" }
   let(:basic_auth_user) { "test-token" }
   let(:auth_header) { "Basic " + Base64.strict_encode64("#{basic_auth_user}:x") }
+  let(:https_options) do
+    {
+      url: base_url,
+      basic_auth_user: basic_auth_user,
+      basic_auth_password: "x",
+    }
+  end
 
   let(:config) do
     MagicPipe::Config.new do |c|
       c.codec = :yaml
       c.transport = :https
 
-      c.https_transport_options = {
-        url: url,
-        basic_auth_user: basic_auth_user,
-        basic_auth_password: "x",
-      }
+      c.https_transport_options = https_options
     end
   end
 
@@ -28,7 +31,7 @@ RSpec.describe MagicPipe::Transports::Https do
     let(:conn) { subject.conn}
 
     it "is configured with the right URL" do
-      expect(conn.url_prefix).to eq URI(url)
+      expect(conn.url_prefix).to eq URI(base_url)
     end
 
     it "is configured with the right headers" do
@@ -50,23 +53,60 @@ RSpec.describe MagicPipe::Transports::Https do
       }
     end
 
+
     def perform
       subject.submit(payload, metadata)
     end
 
-    it "submits a request with the correct data" do
-      stub_request(:post, url).with(
-        body: payload,
-        headers: {
-          "Content-Type" => "application/x-yaml",
-          "Authorization" => auth_header,
-          "X-MagicPipe-Sent-At" => 123123123,
-          "X-MagicPipe-Topic" => "marsupials",
-          "X-MagicPipe-Producer" => "Mr. Koala"
-        }
-      )
 
-      perform
+    def self.it_submits_a_request_with_the_correct_data
+      it "submits a request with the correct data" do
+        stub_request(:post, target_url).with(
+          body: payload,
+          headers: {
+            "Content-Type" => "application/x-yaml",
+            "Authorization" => auth_header,
+            "X-MagicPipe-Sent-At" => 123123123,
+            "X-MagicPipe-Topic" => "marsupials",
+            "X-MagicPipe-Producer" => "Mr. Koala"
+          }
+        )
+
+        perform
+      end
+    end
+
+
+    describe "without a custom path" do
+      let(:target_url) { base_url }
+
+      it_submits_a_request_with_the_correct_data
+    end
+
+
+    describe "when using a dynamic sub path" do
+      let(:https_options) do
+        super().merge(
+          dynamic_path_builder: -> (topic) { topic + "-" + topic + "/foo" }
+        )
+      end
+
+      let(:target_url) { base_url + "/marsupials-marsupials/foo" }
+
+      it_submits_a_request_with_the_correct_data
+    end
+
+
+    describe "when using a dynamic full path" do
+      let(:https_options) do
+        super().merge(
+          dynamic_path_builder: -> (topic) { "/" + topic + "-" + topic + "/foo" }
+        )
+      end
+
+      let(:target_url) { base_url.sub("/test", "/marsupials-marsupials/foo") }
+
+      it_submits_a_request_with_the_correct_data
     end
   end
 end

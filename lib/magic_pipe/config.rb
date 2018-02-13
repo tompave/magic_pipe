@@ -54,7 +54,26 @@ module MagicPipe
       return unless @https_transport_options
 
       defaults = {
+        # The base URL. It can contain a path
+        #
         url: "https://localhost:8080/foo",
+        #
+        # A callable that receives the topic name.
+        # For example if you want to use the topic
+        # as sub path, provide an identity proc:
+        #
+        #  -> (t) { t }
+        #
+        # The callable should return an absolute "/my/path"
+        # value to replace the entire path of the configured
+        # URL. It should return a relative "my/path" value
+        # to simply append the dynamic path to the base URL.
+        #
+        # When this parameter is nil, the configured URL
+        # will be used as is.
+        #
+        dynamic_path_builder: nil,
+
         basic_auth_user: "missing",
         basic_auth_password: "x",
         timeout: 2,

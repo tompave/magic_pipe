@@ -11,6 +11,7 @@ module MagicPipe
         super(config, metrics)
         @options = @config.https_transport_options
         @conn = build_connection
+        @path_builder = @options[:dynamic_path_builder]
       end
 
       attr_reader :conn
@@ -21,6 +22,9 @@ module MagicPipe
       #
       def submit(payload, metadata)
         @conn.post do |r|
+          path = dynamic_path(metadata[:topic])
+          r.url(path) if path
+
           r.body = payload
           r.headers["X-MagicPipe-Sent-At"] = metadata[:time]
           r.headers["X-MagicPipe-Topic"] = metadata[:topic]
@@ -30,6 +34,12 @@ module MagicPipe
 
 
       private
+
+
+      def dynamic_path(topic)
+        return nil unless !!@path_builder
+        @path_builder.call(topic)
+      end
 
       def url
         @options.fetch(:url)
