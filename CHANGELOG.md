@@ -1,5 +1,12 @@
 # MagicPipe Changelog
 
+## v0.2.0
+
+Enhancing the HTTPS transport:
+
+* Allow to configure both user and password for HTTP Basic Auth.
+* Allow to configure a callable to use dynamic URL paths.
+
 ## v0.1.0
 
 Initial release.
