@@ -74,8 +74,7 @@ module MagicPipe
         #
         dynamic_path_builder: nil,
 
-        basic_auth_user: "missing",
-        basic_auth_password: "x",
+        basic_auth: "missing:x",
         timeout: 2,
         open_timeout: 3,
       }

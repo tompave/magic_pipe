@@ -21,6 +21,8 @@ module MagicPipe
       # So that it can be retried?
       #
       def submit(payload, metadata)
+        username, password = basic_auth(metadata[:topic])
+        @conn.basic_auth(username, password || "x")
         @conn.post do |r|
           path = dynamic_path(metadata[:topic])
           r.url(path) if path
@@ -45,12 +47,14 @@ module MagicPipe
         @options.fetch(:url)
       end
 
-      def basic_auth_user
-        @options.fetch(:basic_auth_user)
-      end
-
-      def basic_auth_password
-        @options.fetch(:basic_auth_password)
+      def basic_auth(topic)
+        user_auth = @options.fetch(:basic_auth)
+        credentials = if user_auth.respond_to?(:call)
+          user_auth.call(topic)
+        else
+          user_auth
+        end
+        credentials.split(':')
       end
 
       def timeout
@@ -78,7 +82,6 @@ module MagicPipe
       def build_connection
         Faraday.new(url) do |f|
           f.request :retry, max: 2, interval: 0.1, backoff_factor: 2
-          f.request :basic_auth, basic_auth_user, basic_auth_password
 
           f.headers['Content-Type'] = content_type
           f.headers['User-Agent'] = user_agent

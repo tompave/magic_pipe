@@ -7,8 +7,7 @@ RSpec.describe MagicPipe::Transports::Https do
   let(:https_options) do
     {
       url: base_url,
-      basic_auth_user: basic_auth_user,
-      basic_auth_password: "x",
+      basic_auth: "#{basic_auth_user}:x",
     }
   end
 
@@ -105,6 +104,18 @@ RSpec.describe MagicPipe::Transports::Https do
       end
 
       let(:target_url) { base_url.sub("/test", "/marsupials-marsupials/foo") }
+
+      it_submits_a_request_with_the_correct_data
+    end
+
+    describe "when using a dynamic `basic_auth`" do
+      let(:target_url) { base_url }
+      let(:https_options) do
+        super().merge(
+          basic_auth: -> (topic) { "test-#{topic}:foobar" }
+        )
+      end
+      let(:auth_header) { "Basic " + Base64.strict_encode64("test-marsupials:foobar") }
 
       it_submits_a_request_with_the_correct_data
     end

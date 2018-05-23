@@ -141,7 +141,7 @@ $magic_pipe = MagicPipe.build do |mp|
   }
   mp.https_transport_options = {
     url: "https://my.receiver.service/foo",
-    basic_auth_user: "bar",
+    basic_auth: "bar:foo",
   }
   mp.sqs_transport_options = {
     queue: "my_data_stream"
@@ -217,8 +217,7 @@ $magic_pipe = MagicPipe.build do |mp|
     url: "https://my.receiver.service/messages",
     dynamic_path_builder: -> (topic) { topic }
 
-    basic_auth_user: "foo",
-    basic_auth_password: "bar",
+    basic_auth: "foo:bar",
 
     timeout: 2,
     open_timeout: 3,
