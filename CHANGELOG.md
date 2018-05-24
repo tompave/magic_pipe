@@ -1,8 +1,11 @@
 # MagicPipe Changelog
 
-## Unreleased
-* Allow to set the `basic_auth` config as a proc which gets the topic name passed.
+## v0.3.0
+
+* Allow to set the `basic_auth` config as a proc which gets the topic name passed. (thanks @Crunch09, https://github.com/tompave/magic_pipe/pull/1)
+
 Example:
+
 ```ruby
 basic_auth: ->(topic) {
     username = ENV["TOPIC_#{topic.singularize.upcase}_USER"]
@@ -10,11 +13,14 @@ basic_auth: ->(topic) {
     "#{username}:#{password}"
 }
 ```
+
 It should always return a string in the format `USERNAME:PASSWORD`. Instead
 of using a proc this string can be set directly:
+
 ```ruby
 basic_auth: "foo:bar"
 ```
+
 In favor of this `basic_auth_user` and `basic_auth_password` have been removed.
 
 ## v0.2.0
