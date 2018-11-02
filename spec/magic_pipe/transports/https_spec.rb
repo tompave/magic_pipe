@@ -119,5 +119,15 @@ RSpec.describe MagicPipe::Transports::Https do
 
       it_submits_a_request_with_the_correct_data
     end
+
+    describe "when the HTTP request fails" do
+      before do
+        stub_request(:post, base_url).to_return(status: 504)
+      end
+
+      it "raises an exception" do
+        expect { perform }.to raise_error(MagicPipe::Transports::SubmitFailedError)
+      end
+    end
   end
 end
