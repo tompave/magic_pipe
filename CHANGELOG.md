@@ -1,6 +1,6 @@
 # MagicPipe Changelog
 
-## v0.4.0 (Unreleased)
+## v0.4.0
 
 Bug fix: Ensure that the `Https` transport raises an exception when the HTTP POST request fails.
 
