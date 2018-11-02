@@ -23,7 +23,7 @@ RSpec.describe MagicPipe::Transports::Log do
     end
 
     def perform
-      subject.submit(payload, metadata)
+      subject.submit!(payload, metadata)
     end
 
     it "just logs the payload" do

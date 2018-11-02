@@ -27,7 +27,7 @@ module MagicPipe
           )
 
           payload = codec.new(envelope).encode
-          client.transport.submit(payload, metadata)
+          client.transport.submit!(payload, metadata)
 
           track_success(client.metrics, topic)
         rescue => e

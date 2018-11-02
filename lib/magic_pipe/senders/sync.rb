@@ -10,7 +10,7 @@ module MagicPipe
         metadata = build_metadata
         envelope = build_message(metadata)
         payload = @codec.new(envelope).encode
-        @transport.submit(payload, metadata)
+        @transport.submit!(payload, metadata)
         track_success(@metrics, @topic)
       rescue => e
         track_failure(@metrics, @topic)

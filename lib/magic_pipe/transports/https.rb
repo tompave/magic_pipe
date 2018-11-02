@@ -20,10 +20,10 @@ module MagicPipe
       # TODO: should this raise an error on failure?
       # So that it can be retried?
       #
-      def submit(payload, metadata)
+      def submit!(payload, metadata)
         username, password = basic_auth(metadata[:topic])
         @conn.basic_auth(username, password || "x")
-        @conn.post do |r|
+        resp = @conn.post do |r|
           path = dynamic_path(metadata[:topic])
           r.url(path) if path
 
@@ -31,6 +31,10 @@ module MagicPipe
           r.headers["X-MagicPipe-Sent-At"] = metadata[:time]
           r.headers["X-MagicPipe-Topic"] = metadata[:topic]
           r.headers["X-MagicPipe-Producer"] = metadata[:producer]
+        end
+
+        unless resp.success?
+          raise SubmitFailedError, self.class
         end
       end
 

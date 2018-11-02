@@ -40,24 +40,24 @@ RSpec.describe MagicPipe::Transports::Multi do
     end
 
     def perform
-      subject.submit(payload, metadata)
+      subject.submit!(payload, metadata)
     end
 
     it "forwards the payload to all the nested transports" do
-      expect(fake_https).to receive(:submit).with(payload, metadata)
-      expect(fake_sqs).to receive(:submit).with(payload, metadata)
+      expect(fake_https).to receive(:submit!).with(payload, metadata)
+      expect(fake_sqs).to receive(:submit!).with(payload, metadata)
       perform
     end
 
     describe "if one of the transports raises an error" do
       before do
-        expect(fake_https).to receive(:submit) do
+        expect(fake_https).to receive(:submit!) do
           raise "oh no"
         end
       end
 
       it "logs the error and doesn't halt the pipeline" do
-        expect(fake_sqs).to receive(:submit).with(payload, metadata)
+        expect(fake_sqs).to receive(:submit!).with(payload, metadata)
 
         expect(config.logger).to receive(:error).with(
           %r{Transports::Multi, error submitting with}

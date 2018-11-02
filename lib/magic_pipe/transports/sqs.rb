@@ -15,7 +15,10 @@ module MagicPipe
       end
 
 
-      def submit(payload, metadata)
+      # The AWS SQS client will raise an error if it can't
+      # submit the message.
+      #
+      def submit!(payload, metadata)
         send_message(payload, metadata)
       end
 

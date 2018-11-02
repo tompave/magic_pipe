@@ -42,7 +42,7 @@ RSpec.describe MagicPipe::Transports::Sqs do
     end
 
     def perform
-      subject.submit(payload, metadata)
+      subject.submit!(payload, metadata)
     end
 
     it "publishes a message to SQS with the correct data" do
