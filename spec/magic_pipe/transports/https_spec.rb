@@ -126,7 +126,10 @@ RSpec.describe MagicPipe::Transports::Https do
       end
 
       it "raises an exception" do
-        expect { perform }.to raise_error(MagicPipe::Transports::SubmitFailedError)
+        expect { perform }.to raise_error(
+          MagicPipe::Transports::SubmitFailedError,
+          "MagicPipe::Transports::Https couldn't submit message"
+        )
       end
     end
   end
