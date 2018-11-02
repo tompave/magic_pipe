@@ -110,7 +110,7 @@ RSpec.describe MagicPipe::Senders::Async do
       end
 
       it "submits the correct payload to the transport" do
-        expect(client.transport).to receive(:submit).with(
+        expect(client.transport).to receive(:submit!).with(
           expected_payload,
           {
             topic: topic,
@@ -127,7 +127,7 @@ RSpec.describe MagicPipe::Senders::Async do
       describe "tracking and metrics" do
         context "on success" do
           before do
-            allow(client.transport).to receive(:submit)
+            allow(client.transport).to receive(:submit!)
           end
 
           it "tracks the action with the metrics object" do
@@ -141,7 +141,7 @@ RSpec.describe MagicPipe::Senders::Async do
 
         context "on failure" do
           before do
-            allow(client.transport).to receive(:submit) do
+            allow(client.transport).to receive(:submit!) do
               raise MagicPipe::Error, "oh no"
             end
           end

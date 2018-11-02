@@ -7,7 +7,7 @@ module MagicPipe
         super(config, metrics)
       end
 
-      def submit(payload, _metadata)
+      def submit!(payload, _metadata)
         @logger.info "[Trasport#submit]: ↩️\n#{payload}\n"
       end
     end

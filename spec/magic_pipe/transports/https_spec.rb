@@ -54,7 +54,7 @@ RSpec.describe MagicPipe::Transports::Https do
 
 
     def perform
-      subject.submit(payload, metadata)
+      subject.submit!(payload, metadata)
     end
 
 

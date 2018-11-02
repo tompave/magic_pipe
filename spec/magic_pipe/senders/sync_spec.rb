@@ -70,7 +70,7 @@ RSpec.describe MagicPipe::Senders::Sync do
 
     it "encodes the data with the codec and sends it with the transport" do
       expect(codec_k).to receive(:new).with(envelope).and_return(codec)
-      expect(transport_i).to receive(:submit).with(payload, metadata)
+      expect(transport_i).to receive(:submit!).with(payload, metadata)
       perform
     end
 
@@ -78,7 +78,7 @@ RSpec.describe MagicPipe::Senders::Sync do
       context "on success" do
         before do
           allow(codec_k).to receive(:new).with(envelope).and_return(codec)
-          allow(transport_i).to receive(:submit).with(payload, metadata)
+          allow(transport_i).to receive(:submit!).with(payload, metadata)
         end
 
         it "tracks the action with the metrics object" do
@@ -93,7 +93,7 @@ RSpec.describe MagicPipe::Senders::Sync do
       context "on failure" do
         before do
           allow(codec_k).to receive(:new).with(envelope).and_return(codec)
-          allow(transport_i).to receive(:submit).with(payload, metadata) do
+          allow(transport_i).to receive(:submit!).with(payload, metadata) do
             raise MagicPipe::Error, "oh no"
           end
         end

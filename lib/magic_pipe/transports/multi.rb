@@ -9,10 +9,10 @@ module MagicPipe
       end
 
 
-      def submit(payload, metadata)
+      def submit!(payload, metadata)
         @transports.map do |transport|
           begin
-            transport.submit(payload, metadata)
+            transport.submit!(payload, metadata)
           rescue => e
             log_error(e, transport)
           end

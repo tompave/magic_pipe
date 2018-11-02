@@ -20,7 +20,7 @@ module MagicPipe
       # TODO: should this raise an error on failure?
       # So that it can be retried?
       #
-      def submit(payload, metadata)
+      def submit!(payload, metadata)
         username, password = basic_auth(metadata[:topic])
         @conn.basic_auth(username, password || "x")
         resp = @conn.post do |r|
