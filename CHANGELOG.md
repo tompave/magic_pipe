@@ -1,5 +1,9 @@
 # MagicPipe Changelog
 
+## v0.4.0 (Unreleased)
+
+Bug fix: Ensure that the `Https` transport raises an exception when the HTTP POST request fails.
+
 ## v0.3.0
 
 * Allow to set the `basic_auth` config as a proc which gets the topic name passed. (thanks @Crunch09, https://github.com/tompave/magic_pipe/pull/1)
