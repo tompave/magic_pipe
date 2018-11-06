@@ -122,13 +122,13 @@ RSpec.describe MagicPipe::Transports::Https do
 
     describe "when the HTTP request fails" do
       before do
-        stub_request(:post, base_url).to_return(status: 504)
+        stub_request(:post, base_url).to_return(status: 504, body: "on, no!")
       end
 
       it "raises an exception" do
         expect { perform }.to raise_error(
           MagicPipe::Transports::SubmitFailedError,
-          "MagicPipe::Transports::Https couldn't submit message"
+          "MagicPipe::Transports::Https couldn't submit message (HTTP response: status=504 body=\"on, no!\")"
         )
       end
     end
