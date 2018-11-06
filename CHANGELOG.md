@@ -1,5 +1,9 @@
 # MagicPipe Changelog
 
+## v0.4.1 (unreleased)
+
+When the `Https` adapter raises a delivery error, also report info about the HTTP failure.
+
 ## v0.4.0
 
 Bug fix: Ensure that the `Https` transport raises an exception when the HTTP POST request fails.
