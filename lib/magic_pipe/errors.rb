@@ -14,8 +14,8 @@ module MagicPipe
 
   module Transports
     class SubmitFailedError < MagicPipe::Error
-      def initialize(transport_klass)
-        @message = "#{transport_klass} couldn't submit message"
+      def initialize(transport_klass, message = nil)
+        @message = "#{transport_klass} couldn't submit message (#{message})"
       end
       attr_reader :message
     end

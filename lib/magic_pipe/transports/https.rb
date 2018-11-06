@@ -34,7 +34,8 @@ module MagicPipe
         end
 
         unless resp.success?
-          raise SubmitFailedError, self.class
+          msg = %Q{HTTP response: status=#{resp.status} body="#{resp.body}"}
+          raise SubmitFailedError.new(self.class, msg)
         end
       end
 
