@@ -10,6 +10,7 @@ module MagicPipe
       @message = "Can't resolve class name '#{class_name}' (#{context})"
     end
     attr_reader :message
+    alias_method :to_s, :message
   end
 
   module Transports
@@ -18,6 +19,7 @@ module MagicPipe
         @message = "#{transport_klass} couldn't submit message (#{message})"
       end
       attr_reader :message
+      alias_method :to_s, :message
     end
 
     class NotImplementedError < SubmitFailedError
