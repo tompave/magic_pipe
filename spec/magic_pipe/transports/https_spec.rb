@@ -125,11 +125,29 @@ RSpec.describe MagicPipe::Transports::Https do
         stub_request(:post, base_url).to_return(status: 504, body: "on, no!")
       end
 
+      let(:error_msg) do
+        "MagicPipe::Transports::Https couldn't submit message (HTTP response: status=504 body=\"on, no!\")"
+      end
+
       it "raises an exception" do
         expect { perform }.to raise_error(
           MagicPipe::Transports::SubmitFailedError,
-          "MagicPipe::Transports::Https couldn't submit message (HTTP response: status=504 body=\"on, no!\")"
+          error_msg
         )
+      end
+
+      specify "the exception returns the message with #to_s" do
+        # This is important because some error trackers will call #to_s
+        # instead of #message, for example NewRelic.
+        error = nil
+
+        begin
+          perform
+        rescue => e
+          error = e
+        end
+
+        expect(error.to_s).to eq error_msg
       end
     end
   end
