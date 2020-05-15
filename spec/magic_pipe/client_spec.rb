@@ -1,4 +1,5 @@
 RSpec.describe MagicPipe::Client do
+  let(:logger) { double(:logger, start: nil, finish: nil) }
   let(:config) do
     MagicPipe::Config.new do |c|
       c.client_name = :foo_bar
@@ -6,6 +7,8 @@ RSpec.describe MagicPipe::Client do
       c.transport = :https
       c.https_transport_options = {} # let the defaults apply
       c.sender = :sync
+      c.before_send = -> { logger.start }
+      c.after_send = -> { logger.finish }
     end
   end
 
@@ -61,7 +64,9 @@ RSpec.describe MagicPipe::Client do
         subject.metrics
       ).and_return(sender)
 
-      expect(sender).to receive(:call)
+      expect(logger).to receive(:start).ordered
+      expect(sender).to receive(:call).ordered
+      expect(logger).to receive(:finish).ordered
 
       perform
     end

@@ -17,6 +17,8 @@ module MagicPipe
       :https_transport_options,
       :sqs_transport_options,
       :async_transport_options,
+      :before_send,
+      :after_send,
     ]
 
     attr_accessor *FIELDS
@@ -43,6 +45,8 @@ module MagicPipe
       @sender ||= :sync
       @codec ||= :yaml
       @transport ||= :log
+      @before_send ||= Proc.new {}
+      @after_send ||= Proc.new {}
 
       set_https_defaults
       set_sqs_defaults

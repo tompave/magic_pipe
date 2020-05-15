@@ -17,6 +17,7 @@ module MagicPipe
     attr_reader :name, :config, :codec, :transport, :sender, :loader, :metrics
 
     def send_data(object:, topic:, wrapper: nil, time: Time.now.utc)
+      config.before_send.call
       sender.new(
         object,
         topic,
@@ -27,6 +28,7 @@ module MagicPipe
         @config,
         @metrics
       ).call
+      config.after_send.call
       true
     end
 

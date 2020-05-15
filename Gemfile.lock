@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    magic_pipe (0.4.2)
+    magic_pipe (0.5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -89,4 +89,4 @@ DEPENDENCIES
   webmock (~> 3.3)
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
